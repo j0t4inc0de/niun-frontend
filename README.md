@@ -2,6 +2,28 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+# Patrón de diseño: Arquitectura en Capas
+
+src/
+├── assets/             # Imágenes y CSS global
+├── components/         # Piezas de UI (Botones, Inputs)
+│   ├── ui/             # Tus componentes base (Button.vue, Input.vue)
+│   └── icons/          # Iconos SVG (o usa librerías)
+├── layouts/            # CLAVE para Móvil vs Web
+│   ├── AuthLayout.vue  # Centrado, limpio (para Login/Registro)
+│   └── MainLayout.vue  # Contiene el Sidebar (PC) y Navbar (Móvil)
+├── router/             # Configuración de rutas
+│   └── index.js
+├── services/           # Conexión con Django
+│   ├── api.js          # Configuración de Axios
+│   ├── auth.js         # Endpoints de login/registro
+│   └── files.js        # Endpoints de archivos
+├── stores/             # Estado (Pinia)
+│   └── auth.js         # ¿Está logueado? ¿Quién es?
+└── views/              # Las pantallas reales
+    ├── auth/           # Login.vue, Register.vue
+    └── dashboard/      # Home.vue, Boveda.vue, Planes.vue
+
 ## Recommended IDE Setup
 
 [VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
