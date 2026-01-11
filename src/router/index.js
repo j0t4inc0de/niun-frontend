@@ -10,17 +10,17 @@ const router = createRouter({
       name: 'login',
       component: LoginView,
     },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('../views/auth/RegisterView.vue'),
-    },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('../views/dashboard/HomeView.vue'),
-      meta: { requiresAuth: true },
-    },
+    // {
+    //   path: '/register',
+    //   name: 'register',
+    //   component: () => import('../views/auth/RegisterView.vue'),
+    // },
+    // {
+    //   path: '/dashboard',
+    //   name: 'dashboard',
+    //   component: () => import('../views/dashboard/HomeView.vue'),
+    //   meta: { requiresAuth: true },
+    // },
     {
       path: '/',
       redirect: '/login', // Por ahor la home redirige al login
