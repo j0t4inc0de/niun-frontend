@@ -63,55 +63,91 @@ onMounted(() => {
             </div>
 
             <div
-                class="group relative overflow-hidden rounded-[2rem] border border-white/5 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/10">
+                class="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-primary/20">
+
                 <div
-                    class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent">
+                    class="absolute -right-10 -top-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/30 transition-colors duration-500">
                 </div>
 
                 <div class="p-8 h-full flex flex-col justify-between relative z-10">
-                    <div>
-                        <p class="text-xs font-bold text-mako-400 uppercase tracking-[0.2em] mb-4">Cuentas</p>
-                        <div class="flex items-baseline gap-1">
-                            <span class="text-5xl font-bold text-white tracking-tighter drop-shadow-md">
-                                {{ auth.user?.limites?.cuentas?.usadas || 0 }}
-                            </span>
-                            <span class="text-xl text-mako-500 font-medium">/ {{ auth.user?.limites?.cuentas?.total ||
-                                10 }}</span>
+                    <div class="flex justify-between items-start">
+                        <p class="text-xs font-bold text-mako-400 uppercase tracking-[0.2em] mt-1">Cuentas Guardadas</p>
+                    </div>
+
+                    <div class="mt-4 flex items-baseline gap-1.5">
+                        <span class="text-5xl font-bold text-white tracking-tighter drop-shadow-lg">
+                            {{ auth.user?.limites?.cuentas?.usadas || 0 }}
+                        </span>
+                        <div class="flex flex-col">
+                            <span class="text-lg font-bold text-mako-300">Items</span>
+                            <span
+                                class="text-[0.6rem] font-bold text-mako-500 uppercase tracking-wide -mt-1">Activos</span>
                         </div>
                     </div>
 
-                    <div class="w-full bg-black/20 rounded-full h-2 mt-6 overflow-hidden border border-white/5">
-                        <div class="h-full bg-gradient-to-r from-primary via-blue-400 to-cyan-300 rounded-full shadow-[0_0_10px_rgba(19,91,236,0.5)] transition-all duration-1000 ease-out relative"
-                            :style="{ width: ((auth.user?.limites?.cuentas?.usadas / auth.user?.limites?.cuentas?.total) * 100) + '%' }">
-                            <div class="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent"></div>
+                    <div class="mt-8 space-y-3">
+                        <div
+                            class="relative w-full h-4 bg-white/10 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
+
+                            <div class="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-all duration-1000 ease-out"
+                                :style="{ width: ((auth.user?.limites?.cuentas?.usadas / auth.user?.limites?.cuentas?.total) * 100) + '%' }">
+                                <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-80">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center text-xs font-medium px-1">
+                            <span class="text-mako-400">0</span>
+                            <div class="flex items-center gap-1.5 text-mako-300">
+                                <span>Límite: <span class="text-white font-bold">{{ auth.user?.limites?.cuentas?.total
+                                    || 10 }}</span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div
-                class="group relative overflow-hidden rounded-[2rem] border border-white/5 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/10">
+                class="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-primary/20">
+
                 <div
-                    class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent">
+                    class="absolute -right-10 -top-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl pointer-events-none group-hover:bg-primary/30 transition-colors duration-500">
                 </div>
 
                 <div class="p-8 h-full flex flex-col justify-between relative z-10">
-                    <div>
-                        <p class="text-xs font-bold text-mako-400 uppercase tracking-[0.2em] mb-4">Almacenamiento</p>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-5xl font-bold text-white tracking-tighter drop-shadow-md">
-                                {{ auth.user?.limites?.almacenamiento?.usado_mb || 0 }}
-                            </span>
+                    <div class="flex justify-between items-start">
+                        <p class="text-xs font-bold text-mako-400 uppercase tracking-[0.2em] mt-1">Almacenamiento</p>
+                    </div>
+
+                    <div class="mt-4 flex items-baseline gap-1.5">
+                        <span class="text-5xl font-bold text-white tracking-tighter drop-shadow-lg">
+                            {{ auth.user?.limites?.almacenamiento?.usado_mb || 0 }}
+                        </span>
+                        <div class="flex flex-col">
+                            <span class="text-lg font-bold text-mako-300">MB</span>
                             <span
-                                class="text-sm font-bold text-white/70 bg-primary/10 px-2 py-1 rounded-md border border-primary">MB</span>
+                                class="text-[0.6rem] font-bold text-mako-500 uppercase tracking-wide -mt-1">Usados</span>
                         </div>
                     </div>
 
-                    <div
-                        class="flex items-center gap-3 mt-6 text-sm text-mako-400 font-medium bg-black/20 p-3 rounded-xl border border-white/5">
-                        <span class="material-symbols-outlined text-primary">cloud</span>
-                        <span>Total disponible: <span class="text-white font-bold">{{
-                            auth.user?.limites?.almacenamiento?.total_gb || 0 }} GB</span></span>
+                    <div class="mt-8 space-y-3">
+                        <div
+                            class="relative w-full h-4 bg-white/10 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
+
+                            <div class="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-blue-500 via-primary to-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.6)] transition-all duration-1000 ease-out"
+                                :style="{ width: (auth.user?.limites?.almacenamiento?.porcentaje || 0) + '%' }">
+                                <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-80">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center text-xs font-medium px-1">
+                            <span class="text-mako-400">0 MB</span>
+                            <div class="flex items-center gap-1.5 text-mako-300">
+                                <span>Total: <span class="text-white font-bold">{{
+                                    auth.user?.limites?.almacenamiento?.total_gb || 0 }} GB</span></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
