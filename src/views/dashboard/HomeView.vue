@@ -103,7 +103,7 @@ onMounted(() => {
                                 {{ auth.user?.limites?.almacenamiento?.usado_mb || 0 }}
                             </span>
                             <span
-                                class="text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-md border border-primary/20">MB</span>
+                                class="text-sm font-bold text-white/70 bg-primary/10 px-2 py-1 rounded-md border border-primary">MB</span>
                         </div>
                     </div>
 
