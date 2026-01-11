@@ -1,10 +1,11 @@
-<script setup></script>
+<script setup>
+import { RouterView } from 'vue-router'
+</script>
 
 <template>
-  <div class="bg-red-500 text-white p-4 text-center">
-    Si esto se ve rojo, Tailwind funciona correctamente
-    <div><span>Hola Mundo!</span></div>
+  <div class="min-h-screen bg-gray-50 text-gray-900 font-sans">
+    <RouterView />
   </div>
 </template>
 
-<style scoped></style>
+<style></style>
