@@ -66,7 +66,7 @@ onMounted(() => {
                 class="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-primary/20">
 
                 <div
-                    class="absolute -right-10 -top-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/30 transition-colors duration-500">
+                    class="absolute -right-10 -top-10 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-600/30 transition-colors duration-500">
                 </div>
 
                 <div class="p-8 h-full flex flex-col justify-between relative z-10">
@@ -89,7 +89,7 @@ onMounted(() => {
                         <div
                             class="relative w-full h-4 bg-white/10 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
 
-                            <div class="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-all duration-1000 ease-out"
+                            <div class="absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-all duration-1000 ease-out"
                                 :style="{ width: ((auth.user?.limites?.cuentas?.usadas / auth.user?.limites?.cuentas?.total) * 100) + '%' }">
                                 <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-80">
                                 </div>
