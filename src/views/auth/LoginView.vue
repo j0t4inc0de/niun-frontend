@@ -8,6 +8,7 @@ const router = useRouter();
 
 const email = ref('');
 const password = ref('');
+const showPassword = ref(false); // Para el ojito de ver contraseña
 const errorMsg = ref('');
 const isLoading = ref(false);
 
@@ -17,10 +18,9 @@ const handleLogin = async () => {
 
     try {
         await authStore.login(email.value, password.value);
-        // Si el login es exitoso, nos vamos al Dashboard
         router.push('/dashboard');
     } catch (error) {
-        errorMsg.value = 'Credenciales incorrectas o error de conexión.';
+        errorMsg.value = 'Credenciales incorrectas.';
     } finally {
         isLoading.value = false;
     }
@@ -28,50 +28,95 @@ const handleLogin = async () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center min-h-screen px-4 bg-gray-100 sm:px-6 lg:px-8">
-        <div class="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg">
+    <div
+        class="relative flex min-h-screen w-full flex-col overflow-hidden items-center justify-center p-4 bg-background-dark font-display antialiased text-white selection:bg-white/20">
 
-            <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900">Bienvenido a Niun</h2>
-                <p class="mt-2 text-sm text-gray-600">
-                    Tu seguridad, simplificada.
-                </p>
+        <div class="w-full max-w-sm flex flex-col gap-8 z-10">
+
+            <div class="flex flex-col items-center justify-center mb-4">
+                <div
+                    class="w-16 h-16 rounded-xl border-2 border-white/20 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    <div class="w-6 h-6 bg-white rotate-45 transform"></div>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight text-white mb-1">Bienvenido a Niun</h1>
+                <p class="text-white/40 text-sm font-medium">Por favor ingresa tus datos.</p>
             </div>
 
-            <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
-                <div class="rounded-md shadow-sm -space-y-px">
-                    <div>
-                        <label for="email-address" class="sr-only">Correo Electrónico</label>
-                        <input id="email-address" v-model="email" name="email" type="email" required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="correo@ejemplo.com">
-                    </div>
-                    <div>
-                        <label for="password" class="sr-only">Contraseña</label>
-                        <input id="password" v-model="password" name="password" type="password" required
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Contraseña">
+            <form @submit.prevent="handleLogin" class="flex flex-col gap-4">
+
+                <div class="group relative">
+                    <label class="sr-only" for="email">Correo electrónico</label>
+                    <input id="email" v-model="email" type="email" required placeholder="Correo electrónico"
+                        class="peer block w-full appearance-none rounded-lg border border-white/20 bg-transparent px-4 py-3.5 text-base text-white placeholder-white/30 focus:border-white focus:outline-none focus:ring-0 transition-colors duration-200" />
+                    <div
+                        class="absolute inset-y-0 right-4 flex items-center pointer-events-none opacity-0 peer-focus:opacity-100 transition-opacity duration-200 text-white/50">
+                        <span class="material-symbols-outlined text-[20px]">mail</span>
                     </div>
                 </div>
 
-                <div v-if="errorMsg" class="text-red-500 text-sm text-center font-medium bg-red-50 p-2 rounded">
+                <div class="group relative">
+                    <label class="sr-only" for="password">Contraseña</label>
+                    <div class="relative flex items-center">
+                        <input id="password" v-model="password" :type="showPassword ? 'text' : 'password'" required
+                            placeholder="Contraseña"
+                            class="peer block w-full appearance-none rounded-lg border border-white/20 bg-transparent px-4 py-3.5 pr-12 text-base text-white placeholder-white/30 focus:border-white focus:outline-none focus:ring-0 transition-colors duration-200" />
+                        <button type="button" @click="showPassword = !showPassword"
+                            class="absolute right-0 top-0 bottom-0 px-4 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer outline-none">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">
+                                {{ showPassword ? 'visibility_off' : 'visibility' }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div v-if="errorMsg"
+                    class="text-red-400 text-sm text-center bg-red-900/20 py-2 rounded border border-red-500/30">
                     {{ errorMsg }}
                 </div>
 
-                <div>
+                <div class="flex flex-col gap-6 mt-2">
                     <button type="submit" :disabled="isLoading"
-                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
-                        <span v-if="isLoading">Cargando...</span>
+                        class="w-full rounded-lg bg-[#F5F5F5] py-3.5 text-center text-base font-bold text-[#2E2E2E] shadow-lg hover:bg-white hover:shadow-xl active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed">
+                        <span v-if="isLoading">Entrando...</span>
                         <span v-else>Iniciar Sesión</span>
                     </button>
-                </div>
 
-                <div class="text-center mt-4">
-                    <router-link to="/register" class="text-sm text-indigo-600 hover:text-indigo-500">
-                        ¿No tienes cuenta? Regístrate aquí
-                    </router-link>
+                    <div class="flex flex-col items-center gap-4">
+                        <a href="#"
+                            class="text-sm font-medium text-white/50 hover:text-white transition-colors underline-offset-4 hover:underline">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+
+                        <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-1">
+                        </div>
+
+                        <p class="text-sm text-white/40">
+                            ¿No tienes cuenta?
+                            <router-link to="/register"
+                                class="font-semibold text-white hover:underline decoration-white/30 underline-offset-2 ml-1">
+                                Crear Cuenta
+                            </router-link>
+                        </p>
+                    </div>
                 </div>
             </form>
         </div>
+
+        <div
+            class="fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/40 to-transparent pointer-events-none">
+        </div>
     </div>
 </template>
+
+<style scoped>
+/* Estilos para que el autocompletado del navegador no rompa el diseño oscuro */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #2E2E2E inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: white;
+}
+</style>
