@@ -24,22 +24,25 @@ const handleLogout = () => {
             </div>
 
             <nav class="flex-1 px-4 space-y-2 mt-4">
-                <router-link to="/dashboard" active-class="bg-primary/10 text-primary border-primary"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg border border-transparent hover:bg-mako-800 transition-colors">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    Inicio
+                <router-link to="/dashboard" @click="isMobileMenuOpen = false"
+                    active-class="bg-mako-800 text-white border-l-4 border-primary shadow-md"
+                    class="group flex items-center gap-3 px-4 py-3.5 rounded-r-xl border-l-4 border-transparent text-mako-400 hover:text-white hover:bg-mako-800/50 transition-all duration-200">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+                    <span class="font-medium">Inicio</span>
                 </router-link>
 
-                <router-link to="/boveda" active-class="bg-primary/10 text-primary border-primary"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg border border-transparent hover:bg-mako-800 transition-colors">
-                    <span class="material-symbols-outlined">lock</span>
-                    Bóveda
+                <router-link to="/boveda" @click="isMobileMenuOpen = false"
+                    active-class="bg-mako-800 text-white border-l-4 border-primary shadow-md"
+                    class="group flex items-center gap-3 px-4 py-3.5 rounded-r-xl border-l-4 border-transparent text-mako-400 hover:text-white hover:bg-mako-800/50 transition-all duration-200">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">lock</span>
+                    <span class="font-medium">Bóveda</span>
                 </router-link>
 
-                <router-link to="/perfil" active-class="bg-primary/10 text-primary border-primary"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg border border-transparent hover:bg-mako-800 transition-colors">
-                    <span class="material-symbols-outlined">person</span>
-                    Mi Perfil
+                <router-link to="/perfil" @click="isMobileMenuOpen = false"
+                    active-class="bg-mako-800 text-white border-l-4 border-primary shadow-md"
+                    class="group flex items-center gap-3 px-4 py-3.5 rounded-r-xl border-l-4 border-transparent text-mako-400 hover:text-white hover:bg-mako-800/50 transition-all duration-200">
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">person</span>
+                    <span class="font-medium">Mi Perfil</span>
                 </router-link>
             </nav>
 
