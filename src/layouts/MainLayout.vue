@@ -1,10 +1,14 @@
 <!-- src\layouts\MainLayout.vue -->
 <script setup>
+import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const router = useRouter();
+
+// Variable para controlar el menú en celular
+const isMobileMenuOpen = ref(false);
 
 const handleLogout = () => {
     authStore.logout();
@@ -13,14 +17,25 @@ const handleLogout = () => {
 </script>
 
 <template>
-    <div class="flex h-screen bg-mako-950 text-mako-50 font-body">
+    <div class="flex h-screen bg-mako-950 text-mako-50 font-body overflow-hidden">
 
-        <aside class="hidden md:flex flex-col w-64 bg-mako-900 border-r border-mako-800">
+        <div v-if="isMobileMenuOpen" @click="isMobileMenuOpen = false"
+            class="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden transition-opacity">
+        </div>
+
+        <aside :class="[
+            'fixed inset-y-0 left-0 z-30 w-64 bg-mako-900 border-r border-mako-800 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col',
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        ]">
             <div class="p-6 flex items-center gap-3">
                 <div class="w-8 h-8 rounded bg-mako-800 border border-mako-700 flex items-center justify-center">
                     <div class="w-3 h-3 bg-mako-50 rotate-45"></div>
                 </div>
                 <span class="text-xl font-bold tracking-tight">Niun</span>
+
+                <button @click="isMobileMenuOpen = false" class="ml-auto md:hidden text-mako-400">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
 
             <nav class="flex-1 px-4 space-y-2 mt-4">
@@ -58,10 +73,12 @@ const handleLogout = () => {
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="md:hidden flex items-center justify-between p-4 bg-mako-900 border-b border-mako-800">
                 <span class="font-bold">Niun</span>
-                <button class="text-mako-50"><span class="material-symbols-outlined">menu</span></button>
+                <button @click="isMobileMenuOpen = true" class="text-mako-50">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
             </header>
 
-            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 scroll-smooth">
                 <router-view />
             </main>
         </div>
