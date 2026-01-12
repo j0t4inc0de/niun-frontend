@@ -1,64 +1,92 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
 
+// Estados
+const anuncios = ref([]);
 const cargando = ref(true);
 const error = ref(false);
+const errorMsg = ref('');
 const indiceActual = ref(0);
-const anuncios = ref([]);
+const auth = useAuthStore();
 
+// Estilos
 const estilosPorTipo = {
-    info: 'border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20',
-    alerta: 'border-red-500/30 bg-red-500/10 hover:bg-red-500/20',
-    promo: 'border-purple-500/30 bg-purple-500/10 hover:purple-blue-500/20'
+    info: 'bg-blue-500/10  border-blue-500/20  shadow-[0_0_20px_rgba(59,130,246,0.1)]',
+    promo: 'bg-purple-500/10 border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.1)]',
+    alerta: 'bg-red-500/10    border-red-500/20    shadow-[0_0_20px_rgba(239,68,68,0.1)]'
 };
 
-const anuncioActual = computed(() => {
-    if (anuncios.value.length === 0) return null;
-    return anuncios.value[indiceActual.value];
-});
+const anuncioActual = computed(() => anuncios.value[indiceActual.value] || {});
 
-const formatearFecha = (fechaStr) => {
-    if (!fechaStr) return '';
-    const fecha = new Date(fechaStr);
-    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' }).format(fecha);
+const fetchAnuncios = async () => {
+    cargando.value = true;
+    error.value = false;
+
+    const url = `${import.meta.env.VITE_API_BASE_URL}/anuncios/`;
+
+    try {
+        const token = auth.token || auth.accessToken;
+
+        if (!token) {
+            throw new Error("No hay sesión activa (Falta Token)");
+        }
+
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
+        console.log(`📡 Conectando a: ${url}`);
+
+        const response = await axios.get(url, config);
+
+        console.log("✅ Datos recibidos:", response.data);
+
+        if (Array.isArray(response.data)) {
+            anuncios.value = response.data;
+        } else if (response.data && Array.isArray(response.data.results)) {
+            // Por si acaso Django paginara en el futuro
+            anuncios.value = response.data.results;
+        } else {
+            anuncios.value = [];
+        }
+
+    } catch (err) {
+        console.error('❌ Error:', err);
+        error.value = true;
+
+        if (err.response && err.response.status === 401) {
+            errorMsg.value = "Sesión expirada (401). Recarga la página.";
+        } else {
+            errorMsg.value = err.message || "Error desconocido";
+        }
+    } finally {
+        cargando.value = false;
+    }
 };
 
 const nextSlide = () => {
-    if (indiceActual.value < anuncios.value.length - 1) {
-        indiceActual.value++;
-    } else {
-        indiceActual.value = 0;
-    }
+    if (anuncios.value.length === 0) return;
+    indiceActual.value = (indiceActual.value + 1) % anuncios.value.length;
 };
 
 const prevSlide = () => {
-    if (indiceActual.value > 0) {
-        indiceActual.value--;
-    } else {
-        indiceActual.value = anuncios.value.length - 1;
-    }
+    if (anuncios.value.length === 0) return;
+    indiceActual.value = (indiceActual.value - 1 + anuncios.value.length) % anuncios.value.length;
+};
+
+const formatearFecha = (fechaString) => {
+    if (!fechaString) return '';
+    const fecha = new Date(fechaString);
+    return new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'long' }).format(fecha);
 };
 
 onMounted(() => {
-    setTimeout(() => {
-        anuncios.value = [
-            {
-                id: 1,
-                titulo: 'Mantenimiento Programado',
-                mensaje: 'La plataforma estará en mantenimiento el domingo de 3:00 AM a 5:00 AM.',
-                tipo: 'alerta',
-                creado_en: '2023-10-25T10:00:00'
-            },
-            {
-                id: 2,
-                titulo: 'Nueva Funcionalidad',
-                mensaje: 'Ahora puedes guardar archivos encriptados.',
-                tipo: 'promo',
-                creado_en: '2023-10-24T15:30:00'
-            }
-        ];
-        cargando.value = false;
-    }, 1000);
+    fetchAnuncios();
 });
 </script>
 
@@ -104,13 +132,14 @@ onMounted(() => {
             <div v-else-if="error" class="py-6 text-center border border-red-500/30 rounded-2xl bg-red-500/10">
                 <span class="material-symbols-outlined text-red-400 text-3xl mb-2">error</span>
                 <p class="text-red-200 font-bold">Error de conexión</p>
-                <p class="text-xs text-red-300/70 mt-1 px-4">No se pudo conectar con el servidor.</p>
+                <p class="text-xs text-red-300/70 mt-1 px-4">{{ errorMsg }}</p>
             </div>
 
             <div v-else-if="anuncios.length === 0"
                 class="py-6 text-center border border-white/10 rounded-2xl bg-white/5">
                 <span class="material-symbols-outlined text-white/30 text-3xl mb-2">inbox</span>
                 <p class="text-white/60 font-medium">No hay anuncios activos</p>
+                <p class="text-xs text-white/30 mt-1">El servidor respondió OK, pero la lista está vacía.</p>
             </div>
 
             <div v-else class="relative min-h-[120px]">

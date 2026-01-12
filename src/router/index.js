@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/dashboard',
       component: () => import('../layouts/MainLayout.vue'),
-      // meta: { requiresAuth: true },
+      meta: { requiresAuth: true },
       children: [
         {
           path: '',
@@ -27,7 +27,7 @@ const router = createRouter({
         },
         // Ruta para testear componentes:  Sandbox
         {
-          path: '/test',
+          path: 'test',
           name: 'test-widget',
           component: () => import('../components/ui/AnunciosWidget.vue'),
         },
