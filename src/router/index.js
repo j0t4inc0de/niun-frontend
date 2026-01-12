@@ -25,6 +25,11 @@ const router = createRouter({
           name: 'dashboard',
           component: () => import('../views/dashboard/HomeView.vue'),
         },
+        {
+          path: 'cuentas',
+          name: 'cuentas',
+          component: () => import('../components/CuentasLista.vue'),
+        },
         // Ruta para testear componentes:  Sandbox
         {
           path: 'test',
