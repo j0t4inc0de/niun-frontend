@@ -30,11 +30,9 @@ const fetchAnuncios = async () => {
 
         const datos = await obtenerAnuncios(token);
 
-        console.log("✅ Componente recibió:", datos);
         anuncios.value = datos;
 
     } catch (err) {
-        console.error('❌ Error en widget:', err);
         error.value = true;
 
         if (err.response && err.response.status === 401) {
