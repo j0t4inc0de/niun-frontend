@@ -3,6 +3,8 @@
 import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 
+import AnunciosWidget from '@/components/ui/AnunciosWidget.vue';
+
 const auth = useAuthStore();
 
 onMounted(() => {
@@ -30,7 +32,6 @@ onMounted(() => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
             <div
                 class="group relative overflow-hidden rounded-[2rem] border border-white/5 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/10 hover:shadow-primary/10">
                 <div
@@ -197,6 +198,9 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+
+        <AnunciosWidget />
+
     </div>
 </template>
 
