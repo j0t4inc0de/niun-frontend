@@ -98,71 +98,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import axios from 'axios';
 
-// Estados para controlar la UI
-const anuncios = ref([]);
-const cargando = ref(true);
-const error = ref(false);
-const indiceActual = ref(0);
-
-// Estilos dinámicos según tipo de anuncio
-const estilosPorTipo = {
-    info: 'bg-blue-500/10  border-blue-500/20  shadow-[0_0_20px_rgba(59,130,246,0.1)]',
-    promo: 'bg-purple-500/10 border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.1)]',
-    alerta: 'bg-red-500/10    border-red-500/20    shadow-[0_0_20px_rgba(239,68,68,0.1)]'
-};
-
-const anuncioActual = computed(() => anuncios.value[indiceActual.value] || {});
-
-const fetchAnuncios = async () => {
-    cargando.value = true;
-    error.value = false;
-
-    try {
-        // 1. Llamada a la API
-        console.log("📡 Intentando conectar a /api/anuncios/...");
-        const response = await axios.get('/api/anuncios/');
-        console.log("✅ Respuesta recibida:", response.data);
-
-        // 2. Manejo inteligente de la respuesta (Lista vs Paginación)
-        if (Array.isArray(response.data)) {
-            anuncios.value = response.data;
-        } else if (response.data && Array.isArray(response.data.results)) {
-            anuncios.value = response.data.results;
-        } else {
-            console.warn("⚠️ Formato de respuesta desconocido:", response.data);
-            anuncios.value = [];
-        }
-
-    } catch (err) {
-        console.error('❌ Error cargando anuncios:', err);
-        error.value = true;
-    } finally {
-        cargando.value = false;
-    }
-};
-
-const nextSlide = () => {
-    if (anuncios.value.length === 0) return;
-    indiceActual.value = (indiceActual.value + 1) % anuncios.value.length;
-};
-
-const prevSlide = () => {
-    if (anuncios.value.length === 0) return;
-    indiceActual.value = (indiceActual.value - 1 + anuncios.value.length) % anuncios.value.length;
-};
-
-const formatearFecha = (fechaString) => {
-    if (!fechaString) return '';
-    const fecha = new Date(fechaString);
-    return new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'long' }).format(fecha);
-};
-
-onMounted(() => {
-    fetchAnuncios();
-});
 </script>
 
 <style scoped>
