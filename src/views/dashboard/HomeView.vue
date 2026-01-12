@@ -2,6 +2,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import AnunciosWidget from '@/components/AnunciosWidget.vue';
 
 const auth = useAuthStore();
 
@@ -11,7 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="max-w-6xl mx-auto space-y-12">
+    <div class="max-w-6xl mx-auto space-y-12 pb-12">
 
         <div class="relative">
             <div
@@ -197,6 +198,8 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+
+        <AnunciosWidget />
 
     </div>
 </template>
