@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
+
+import { obtenerAnuncios } from '@/services/anuncios';
 
 // Estados
 const anuncios = ref([]);
@@ -24,45 +25,22 @@ const fetchAnuncios = async () => {
     cargando.value = true;
     error.value = false;
 
-    const url = `${import.meta.env.VITE_API_BASE_URL}/anuncios/`;
-
     try {
         const token = auth.token || auth.accessToken;
 
-        if (!token) {
-            throw new Error("No hay sesión activa (Falta Token)");
-        }
+        const datos = await obtenerAnuncios(token);
 
-        const config = {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        };
-
-        console.log(`📡 Conectando a: ${url}`);
-
-        const response = await axios.get(url, config);
-
-        console.log("✅ Datos recibidos:", response.data);
-
-        if (Array.isArray(response.data)) {
-            anuncios.value = response.data;
-        } else if (response.data && Array.isArray(response.data.results)) {
-            // Por si acaso Django paginara en el futuro
-            anuncios.value = response.data.results;
-        } else {
-            anuncios.value = [];
-        }
+        console.log("✅ Componente recibió:", datos);
+        anuncios.value = datos;
 
     } catch (err) {
-        console.error('❌ Error:', err);
+        console.error('❌ Error en widget:', err);
         error.value = true;
 
         if (err.response && err.response.status === 401) {
-            errorMsg.value = "Sesión expirada (401). Recarga la página.";
+            errorMsg.value = "Sesión expirada.";
         } else {
-            errorMsg.value = err.message || "Error desconocido";
+            errorMsg.value = err.message || "Error de conexión";
         }
     } finally {
         cargando.value = false;
