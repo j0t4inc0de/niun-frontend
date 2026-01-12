@@ -1,16 +1,10 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // Ruta para testear componentes
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('../components/AnunciosWidget.vue'),
-    },
-
     {
       path: '/login',
       name: 'login',
@@ -21,19 +15,22 @@ const router = createRouter({
       name: 'register',
       component: () => import('../views/auth/LoginView.vue'),
     },
-    // 🌟 AQUÍ ESTÁ EL CAMBIO IMPORTANTE:
     {
       path: '/dashboard',
       component: () => import('../layouts/MainLayout.vue'),
-      meta: { requiresAuth: true },
+      // meta: { requiresAuth: true },
       children: [
         {
           path: '',
           name: 'dashboard',
           component: () => import('../views/dashboard/HomeView.vue'),
         },
-        // Aquí agregaremos más hijos luego:
-        // { path: 'boveda', component: ... }
+        // Ruta para testear componentes:  Sandbox
+        {
+          path: '/test',
+          name: 'test-widget',
+          component: () => import('../components/AnunciosWidget.vue'),
+        },
       ],
     },
     {
