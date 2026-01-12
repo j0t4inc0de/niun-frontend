@@ -4,6 +4,13 @@ import { useAuthStore } from '../stores/auth'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // Ruta para testear componentes
+    {
+      path: '/test',
+      name: 'test',
+      component: () => import('../components/AnunciosWidget.vue'),
+    },
+
     {
       path: '/login',
       name: 'login',
@@ -12,16 +19,16 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: () => import('../views/auth/LoginView.vue'), // TODO: Cambiar por RegisterView
+      component: () => import('../views/auth/LoginView.vue'),
     },
     // 🌟 AQUÍ ESTÁ EL CAMBIO IMPORTANTE:
     {
       path: '/dashboard',
-      component: () => import('../layouts/MainLayout.vue'), // El Layout envuelve todo
+      component: () => import('../layouts/MainLayout.vue'),
       meta: { requiresAuth: true },
       children: [
         {
-          path: '', // Ruta base: /dashboard
+          path: '',
           name: 'dashboard',
           component: () => import('../views/dashboard/HomeView.vue'),
         },

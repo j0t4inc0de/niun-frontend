@@ -2,7 +2,6 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
-import AnunciosWidget from '@/components/AnunciosWidget.vue';
 
 const auth = useAuthStore();
 
@@ -198,9 +197,6 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-
-        <AnunciosWidget />
-
     </div>
 </template>
 
