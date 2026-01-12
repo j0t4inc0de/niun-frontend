@@ -20,7 +20,7 @@ const mfaQuestion = ref('');
 // Datos del formulario
 const loginForm = reactive({ email: '', password: '', security_answer: '' });
 const registerForm = reactive({
-    username: '', email: '', password: '', confirmPassword: '', // <--- NUEVO CAMPO
+    username: '', email: '', password: '', confirmPassword: '',
     pregunta_seguridad: '', respuesta_seguridad: '', pin_boveda: ''
 });
 
@@ -30,19 +30,48 @@ const handleLogin = async () => {
     errorMsg.value = '';
 
     try {
+        // Enviamos '' si no estamos en el paso MFA
+        const respuestaEnviar = mfaStep.value ? loginForm.security_answer : '';
+
         await authStore.login({
             email: loginForm.email,
             password: loginForm.password,
-            security_answer: mfaStep.value ? loginForm.security_answer : null
+            security_answer: respuestaEnviar
         });
+
         router.push('/dashboard');
+
     } catch (err) {
-        if (err.response && err.response.data && err.response.data.code === 'mfa_required') {
-            mfaQuestion.value = err.response.data.question;
+        // DEBUG: Muestra en la consola qué está llegando exactamente
+        if (err.response) console.log("Respuesta del error:", err.response.data);
+
+        // 1. Extraemos los datos de forma segura
+        const data = err.response?.data || {};
+
+        // 2. Normalizamos el 'code' y la 'question' (Django a veces los envía como Arrays)
+        const code = Array.isArray(data.code) ? data.code[0] : data.code;
+        const question = Array.isArray(data.question) ? data.question[0] : data.question;
+
+        // 3. Verificamos si es el código de MFA
+        if (code === 'mfa_required') {
+            mfaQuestion.value = question;
             mfaStep.value = true;
             errorMsg.value = '';
         } else {
-            errorMsg.value = err.response?.data?.detail || 'Credenciales incorrectas.';
+            // Manejo de errores genéricos
+            // Si data.detail existe, lo usamos. Si no, tratamos de leer el objeto entero.
+            let mensaje = data.detail || 'Error al iniciar sesión.';
+
+            // Si el mensaje es un array (ej: ["Password incorrecta"]), tomamos el primero
+            if (Array.isArray(mensaje)) mensaje = mensaje[0];
+
+            // Si no hay 'detail' y hay otros errores de campo (ej: email invalido)
+            if (!data.detail && typeof data === 'object') {
+                // Convertimos objeto de errores a texto
+                mensaje = Object.values(data).flat().join('\n');
+            }
+
+            errorMsg.value = mensaje;
         }
     } finally {
         loading.value = false;
@@ -54,11 +83,10 @@ const handleRegister = async () => {
     loading.value = true;
     errorMsg.value = '';
 
-    // 1. VALIDACIÓN DE CONTRASEÑAS
     if (registerForm.password !== registerForm.confirmPassword) {
         errorMsg.value = 'Las contraseñas no coinciden.';
         loading.value = false;
-        return; // Detenemos aquí si no son iguales
+        return;
     }
 
     try {
@@ -67,6 +95,7 @@ const handleRegister = async () => {
         toggleView();
     } catch (err) {
         if (err.response && err.response.data) {
+            // Formateamos los errores para mostrarlos
             const errors = Object.values(err.response.data).flat().join('\n');
             errorMsg.value = errors;
         } else {
@@ -81,7 +110,6 @@ const toggleView = () => {
     isLogin.value = !isLogin.value;
     errorMsg.value = '';
     mfaStep.value = false;
-    // Limpiar campos al cambiar de vista
     registerForm.password = '';
     registerForm.confirmPassword = '';
 };
@@ -92,7 +120,6 @@ const toggleView = () => {
         class="relative flex min-h-screen w-full flex-col overflow-hidden items-center justify-center p-4 bg-mako-950 font-display antialiased text-mako-50 selection:bg-primary/30">
 
         <div class="w-full max-w-sm flex flex-col gap-8 z-10">
-
             <div class="flex flex-col items-center justify-center mb-4">
                 <div
                     class="w-16 h-16 rounded-xl border-2 border-mako-700/50 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(255,255,255,0.05)] bg-mako-900/50">
@@ -168,12 +195,6 @@ const toggleView = () => {
                     </button>
 
                     <div v-if="!mfaStep" class="flex flex-col items-center gap-4">
-                        <a href="#"
-                            class="text-sm font-medium text-mako-500 hover:text-mako-300 transition-colors underline-offset-4 hover:underline">
-                            ¿Olvidaste tu contraseña?
-                        </a>
-                        <div class="h-px w-full bg-gradient-to-r from-transparent via-mako-700 to-transparent my-1">
-                        </div>
                         <p class="text-sm text-mako-500">
                             ¿No tienes cuenta?
                             <button type="button" @click="toggleView"
@@ -186,7 +207,6 @@ const toggleView = () => {
             </form>
 
             <form v-else @submit.prevent="handleRegister" class="flex flex-col gap-4">
-
                 <div class="flex gap-4">
                     <div class="group relative w-2/3">
                         <input v-model="registerForm.username" type="text" required placeholder="Nombre"
@@ -231,7 +251,6 @@ const toggleView = () => {
                         <span v-if="loading">Creando...</span>
                         <span v-else>Registrarme</span>
                     </button>
-
                     <div class="flex flex-col items-center gap-4">
                         <p class="text-sm text-mako-500">
                             ¿Ya tienes cuenta?
@@ -244,7 +263,6 @@ const toggleView = () => {
                 </div>
             </form>
         </div>
-
         <div
             class="fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
         </div>
@@ -252,7 +270,6 @@ const toggleView = () => {
 </template>
 
 <style scoped>
-/* Ajuste para el autofill del navegador usando los colores Mako */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
