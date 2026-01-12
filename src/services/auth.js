@@ -2,8 +2,8 @@
 import http from './api/http'
 
 export default {
-  login(email, password) {
-    return http.post('/auth/login/', { email, password })
+  login(credentials) {
+    return http.post('/auth/login/', credentials)
   },
   register(userData) {
     return http.post('/auth/register/', userData)
