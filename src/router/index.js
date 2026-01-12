@@ -29,7 +29,7 @@ const router = createRouter({
         {
           path: '/test',
           name: 'test-widget',
-          component: () => import('../components/AnunciosWidget.vue'),
+          component: () => import('../components/ui/AnunciosWidget.vue'),
         },
       ],
     },

@@ -1,4 +1,67 @@
-<!-- src/components/AnunciosWidget.vue -->
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+
+const cargando = ref(true);
+const error = ref(false);
+const indiceActual = ref(0);
+const anuncios = ref([]);
+
+const estilosPorTipo = {
+    info: 'border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20',
+    alerta: 'border-red-500/30 bg-red-500/10 hover:bg-red-500/20',
+    promo: 'border-purple-500/30 bg-purple-500/10 hover:purple-blue-500/20'
+};
+
+const anuncioActual = computed(() => {
+    if (anuncios.value.length === 0) return null;
+    return anuncios.value[indiceActual.value];
+});
+
+const formatearFecha = (fechaStr) => {
+    if (!fechaStr) return '';
+    const fecha = new Date(fechaStr);
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' }).format(fecha);
+};
+
+const nextSlide = () => {
+    if (indiceActual.value < anuncios.value.length - 1) {
+        indiceActual.value++;
+    } else {
+        indiceActual.value = 0;
+    }
+};
+
+const prevSlide = () => {
+    if (indiceActual.value > 0) {
+        indiceActual.value--;
+    } else {
+        indiceActual.value = anuncios.value.length - 1;
+    }
+};
+
+onMounted(() => {
+    setTimeout(() => {
+        anuncios.value = [
+            {
+                id: 1,
+                titulo: 'Mantenimiento Programado',
+                mensaje: 'La plataforma estará en mantenimiento el domingo de 3:00 AM a 5:00 AM.',
+                tipo: 'alerta',
+                creado_en: '2023-10-25T10:00:00'
+            },
+            {
+                id: 2,
+                titulo: 'Nueva Funcionalidad',
+                mensaje: 'Ahora puedes guardar archivos encriptados.',
+                tipo: 'promo',
+                creado_en: '2023-10-24T15:30:00'
+            }
+        ];
+        cargando.value = false;
+    }, 1000);
+});
+</script>
+
 <template>
     <div
         class="group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300">
@@ -41,15 +104,13 @@
             <div v-else-if="error" class="py-6 text-center border border-red-500/30 rounded-2xl bg-red-500/10">
                 <span class="material-symbols-outlined text-red-400 text-3xl mb-2">error</span>
                 <p class="text-red-200 font-bold">Error de conexión</p>
-                <p class="text-xs text-red-300/70 mt-1 px-4">No se pudo conectar con /api/anuncios/. Revisa la consola
-                    (F12).</p>
+                <p class="text-xs text-red-300/70 mt-1 px-4">No se pudo conectar con el servidor.</p>
             </div>
 
             <div v-else-if="anuncios.length === 0"
                 class="py-6 text-center border border-white/10 rounded-2xl bg-white/5">
                 <span class="material-symbols-outlined text-white/30 text-3xl mb-2">inbox</span>
                 <p class="text-white/60 font-medium">No hay anuncios activos</p>
-                <p class="text-xs text-white/30 mt-1">Todo está tranquilo por aquí.</p>
             </div>
 
             <div v-else class="relative min-h-[120px]">
@@ -96,84 +157,6 @@
         </div>
     </div>
 </template>
-
-<script setup>
-import { ref, computed, onMounted } from 'vue';
-
-// Estado del componente
-const cargando = ref(true);
-const error = ref(false);
-const indiceActual = ref(0);
-const anuncios = ref([]);
-
-// Estilos dinámicos para el borde/color según el tipo de anuncio
-const estilosPorTipo = {
-    info: 'border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20',
-    alerta: 'border-red-500/30 bg-red-500/10 hover:bg-red-500/20',
-    promo: 'border-purple-500/30 bg-purple-500/10 hover:purple-blue-500/20'
-};
-
-// Computada para obtener el anuncio visible
-const anuncioActual = computed(() => {
-    if (anuncios.value.length === 0) return null;
-    return anuncios.value[indiceActual.value];
-});
-
-// Formatear fecha simple
-const formatearFecha = (fechaStr) => {
-    if (!fechaStr) return '';
-    const fecha = new Date(fechaStr);
-    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' }).format(fecha);
-};
-
-// Navegación del slider
-const nextSlide = () => {
-    if (indiceActual.value < anuncios.value.length - 1) {
-        indiceActual.value++;
-    } else {
-        indiceActual.value = 0; // Loop al inicio
-    }
-};
-
-const prevSlide = () => {
-    if (indiceActual.value > 0) {
-        indiceActual.value--;
-    } else {
-        indiceActual.value = anuncios.value.length - 1; // Loop al final
-    }
-};
-
-// Simular carga de datos (Mock Data)
-onMounted(() => {
-    setTimeout(() => {
-        // Aquí conectarías con tu API real luego
-        anuncios.value = [
-            {
-                id: 1,
-                titulo: 'Mantenimiento Programado',
-                mensaje: 'La plataforma estará en mantenimiento el domingo de 3:00 AM a 5:00 AM.',
-                tipo: 'alerta',
-                creado_en: '2023-10-25T10:00:00'
-            },
-            {
-                id: 2,
-                titulo: 'Nueva Funcionalidad: Bóveda',
-                mensaje: 'Ahora puedes guardar archivos encriptados en tu bóveda personal.',
-                tipo: 'promo',
-                creado_en: '2023-10-24T15:30:00'
-            },
-            {
-                id: 3,
-                titulo: 'Bienvenido a Niun',
-                mensaje: 'Gracias por unirte. Explora el dashboard para ver tus estadísticas.',
-                tipo: 'info',
-                creado_en: '2023-10-20T09:00:00'
-            }
-        ];
-        cargando.value = false;
-    }, 1500); // Retraso artificial para ver el estado de carga
-});
-</script>
 
 <style scoped>
 .fade-enter-active,
