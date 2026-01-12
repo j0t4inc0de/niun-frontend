@@ -17,4 +17,7 @@ export default {
   eliminar(id) {
     return http.delete(`/cuentas/${id}/`)
   },
+  actualizar(id, datosCuenta) {
+    return http.put(`/cuentas/${id}/`, datosCuenta)
+  },
 }
