@@ -8,15 +8,14 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 // Estados de la vista
-const isLogin = ref(true); // true = Login, false = Registro
+const isLogin = ref(true);
 const loading = ref(false);
 const errorMsg = ref('');
-const warningMsg = ref(''); // Nueva alerta de "Muerte Súbita"
+const warningMsg = ref('');
 const showPassword = ref(false);
 const showSecurityAnswer = ref(false);
 
-// Estado para el Flujo de 2 Pasos (Opción B)
-const loginStep = ref(1); // 1: Credenciales, 2: Respuesta de Seguridad
+const loginStep = ref(1);
 
 // Datos del formulario
 const loginForm = reactive({ email: '', password: '', security_answer: '' });
@@ -31,7 +30,7 @@ const nextStep = () => {
     if (loginForm.email && loginForm.password) {
         errorMsg.value = '';
         warningMsg.value = '';
-        loginStep.value = 2; // Avanzamos a la respuesta de seguridad
+        loginStep.value = 2;
     } else {
         errorMsg.value = "Por favor ingresa correo y contraseña.";
     }
@@ -55,7 +54,6 @@ const handleLogin = async () => {
 
         if (typeof detail === 'string') {
             if (detail.includes('intentos')) {
-                // Intentamos extraer el número de intentos restantes
                 const match = detail.match(/quedan (\d+)/);
                 const intentosRestantes = match ? parseInt(match[1]) : 10;
 
@@ -328,7 +326,6 @@ const toggleView = () => {
 </template>
 
 <style scoped>
-/* Mantengo tu fix para el autocompletado de Chrome */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
