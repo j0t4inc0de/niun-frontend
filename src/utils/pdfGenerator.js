@@ -56,17 +56,17 @@ export const generateSecurityPDF = (userData) => {
 
   doc.setFont('helvetica', 'italic')
   doc.setTextColor(150)
-  doc.text('[NO INCLUIDA POR SEGURIDAD - MEMORÍZALA]', xValue, y)
+  doc.text('[ ]', xValue, y)
 
   y += 30
 
-  doc.setFillColor(240, 50, 50) // Rojo suave
+  doc.setFillColor(240, 50, 50)
   doc.rect(20, y, pageWidth - 40, 35, 'F')
 
   doc.setTextColor(255, 255, 255)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(12)
-  doc.text('⚠️ PROTOCOLO DE AUTODESTRUCCIÓN ACTIVO', pageWidth / 2, y + 10, { align: 'center' })
+  doc.text('PROTOCOLO DE AUTODESTRUCCIÓN', pageWidth / 2, y + 10, { align: 'center' })
 
   doc.setFontSize(10)
   doc.setFont('helvetica', 'normal')

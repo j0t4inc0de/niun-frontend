@@ -1,13 +1,14 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import authService from '@/services/auth';
+import { generateSecurityPDF } from '@/utils/pdfGenerator'; // Importación agregada
 
 const router = useRouter();
 const authStore = useAuthStore();
 
-// Estados de la vista
+// Estados
 const isLogin = ref(true);
 const loading = ref(false);
 const errorMsg = ref('');
@@ -15,18 +16,34 @@ const warningMsg = ref('');
 const showPassword = ref(false);
 const showSecurityAnswer = ref(false);
 
+// Control de pasos
 const loginStep = ref(1);
+const registerStep = ref(1); // Nuevo estado para pasos de registro
 
-// Datos del formulario
 const loginForm = reactive({ email: '', password: '', security_answer: '' });
 const registerForm = reactive({
     username: '', email: '', password: '', confirmPassword: '',
     pregunta_seguridad: '', respuesta_seguridad: '', pin_boveda: ''
 });
 
+// --- TEXTOS DINÁMICOS (Para evitar error de Prettier) ---
+const tituloHeader = computed(() => {
+    if (isLogin.value) {
+        return loginStep.value === 1 ? 'Bienvenido a Niun' : 'Control de Seguridad';
+    }
+    return registerStep.value === 1 ? 'Crear Cuenta' : 'Blindaje de Cuenta';
+});
+
+const subtituloHeader = computed(() => {
+    if (isLogin.value) {
+        return loginStep.value === 1 ? 'Gestión segura de credenciales' : 'Ingresa tu llave maestra.';
+    }
+    return registerStep.value === 1 ? 'Paso 1: Identidad' : 'Paso 2: Seguridad Extrema';
+});
+
 // --- LÓGICA DE LOGIN ---
 
-const nextStep = () => {
+const nextLoginStep = () => {
     if (loginForm.email && loginForm.password) {
         errorMsg.value = '';
         warningMsg.value = '';
@@ -58,12 +75,13 @@ const handleLogin = async () => {
                 const intentosRestantes = match ? parseInt(match[1]) : 10;
 
                 if (intentosRestantes <= 5) {
-                    warningMsg.value = `⚠️ ¡CUIDADO! Credenciales o respuesta incorrecta. Te quedan ${intentosRestantes} intentos de 10. Al terminar tus intentos se borrarán tus datos.`;
+                    // Emojis eliminados
+                    warningMsg.value = `ADVERTENCIA: Credenciales o respuesta incorrecta. Te quedan ${intentosRestantes} intentos. Al terminar tus intentos se borrarán tus datos.`;
                 } else {
                     errorMsg.value = "Credenciales o respuesta de seguridad incorrecta.";
                 }
             } else if (detail.includes('eliminados')) {
-                errorMsg.value = "💀 CUENTA ELIMINADA POR SEGURIDAD.";
+                errorMsg.value = "CUENTA ELIMINADA POR SEGURIDAD.";
             } else {
                 errorMsg.value = detail;
             }
@@ -75,31 +93,54 @@ const handleLogin = async () => {
     }
 };
 
-// --- REGISTRO COMPLETO ---
+// --- LÓGICA DE REGISTRO (STEPS) ---
+
+const nextRegisterStep = () => {
+    // Validaciones paso 1
+    if (!registerForm.username || !registerForm.email || !registerForm.password || !registerForm.confirmPassword) {
+        errorMsg.value = "Todos los campos son obligatorios.";
+        return;
+    }
+    if (registerForm.password !== registerForm.confirmPassword) {
+        errorMsg.value = 'Las contraseñas no coinciden.';
+        return;
+    }
+    errorMsg.value = '';
+    registerStep.value = 2;
+};
+
 const handleRegister = async () => {
     loading.value = true;
     errorMsg.value = '';
 
-    if (registerForm.password !== registerForm.confirmPassword) {
-        errorMsg.value = 'Las contraseñas no coinciden.';
+    // Validaciones paso 2
+    if (registerForm.pin_boveda.length !== 4 || isNaN(registerForm.pin_boveda)) {
+        errorMsg.value = 'El PIN debe ser de 4 números.';
         loading.value = false;
         return;
     }
-
-    // Validación básica de PIN
-    if (registerForm.pin_boveda.length !== 4 || isNaN(registerForm.pin_boveda)) {
-        errorMsg.value = 'El PIN debe ser de 4 números.';
+    if (!registerForm.pregunta_seguridad || !registerForm.respuesta_seguridad) {
+        errorMsg.value = "Completa las preguntas de seguridad.";
         loading.value = false;
         return;
     }
 
     try {
         await authService.register(registerForm);
-        alert('¡Cuenta creada exitosamente! Recuerda tu respuesta de seguridad.');
+
+        // Generar PDF
+        generateSecurityPDF({
+            username: registerForm.username,
+            email: registerForm.email,
+            password: registerForm.password,
+            pin_boveda: registerForm.pin_boveda,
+            pregunta_seguridad: registerForm.pregunta_seguridad
+        });
+
+        alert('Cuenta creada. Se ha descargado tu Kit de Recuperación.');
         toggleView();
     } catch (err) {
         if (err.response && err.response.data) {
-            // Manejo genérico de errores de registro (ej: email duplicado)
             const errors = typeof err.response.data === 'object'
                 ? Object.values(err.response.data).flat().join('\n')
                 : 'Error en el registro';
@@ -116,7 +157,10 @@ const toggleView = () => {
     isLogin.value = !isLogin.value;
     errorMsg.value = '';
     warningMsg.value = '';
-    loginStep.value = 1; // Resetear paso
+    loginStep.value = 1;
+    registerStep.value = 1; // Reset paso registro
+
+    // Limpieza básica
     registerForm.password = '';
     registerForm.confirmPassword = '';
 };
@@ -141,7 +185,7 @@ const toggleView = () => {
                 class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50">
             </div>
 
-            <div class="flex flex-col items-center justify-center mb-8">
+            <div class="flex flex-col items-center justify-center mb-6">
                 <div
                     class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-mako-800 to-black border border-white/10 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(255,255,255,0.05)] group">
                     <div
@@ -152,79 +196,60 @@ const toggleView = () => {
                     </div>
                 </div>
 
-                <h1 class="text-2xl font-bold tracking-tight text-white mb-1 drop-shadow-md">
-                    {{ isLogin ? (loginStep === 1 ? 'Bienvenido a Niun' : 'Control de Seguridad') : 'Crear Cuenta' }}
+                <h1 class="text-2xl font-bold tracking-tight text-white mb-1 drop-shadow-md text-center">
+                    {{ tituloHeader }}
                 </h1>
-                <p class="text-mako-400 text-sm font-medium tracking-wide">
-                    {{ isLogin ? (loginStep === 1 ? 'Niun drama, ni un problema' : 'Ingresa tu llave maestra.') :
-                        'Configura tu acceso seguro.' }}
+                <p class="text-mako-400 text-sm font-medium tracking-wide text-center">
+                    {{ subtituloHeader }}
                 </p>
             </div>
 
-            <form v-if="isLogin" @submit.prevent="loginStep === 1 ? nextStep() : handleLogin()"
+            <form v-if="isLogin" @submit.prevent="loginStep === 1 ? nextLoginStep() : handleLogin()"
                 class="flex flex-col gap-5">
 
                 <div v-if="loginStep === 1" class="flex flex-col gap-5 animate-in fade-in slide-in-from-left-4">
-                    <div class="group relative">
-                        <label class="sr-only" for="email">Correo electrónico</label>
-                        <div class="relative">
-                            <input id="email" v-model="loginForm.email" type="email" required
-                                placeholder="Correo electrónico"
-                                class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 pl-11 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none focus:ring-0 transition-all duration-200" />
-                            <div
-                                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-mako-500 peer-focus:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-[20px]">mail</span>
-                            </div>
-                        </div>
+                    <div class="relative">
+                        <input v-model="loginForm.email" type="email" required placeholder="Correo electrónico"
+                            class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 pl-11 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none transition-all" />
+                        <span
+                            class="material-symbols-outlined absolute left-3.5 top-3.5 text-mako-500 peer-focus:text-primary transition-colors">mail</span>
                     </div>
 
-                    <div class="group relative">
-                        <label class="sr-only" for="password">Contraseña</label>
-                        <div class="relative flex items-center">
-                            <input id="password" v-model="loginForm.password" :type="showPassword ? 'text' : 'password'"
-                                required placeholder="Contraseña"
-                                class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 pl-11 pr-12 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none focus:ring-0 transition-all duration-200" />
-                            <div
-                                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-mako-500 peer-focus:text-primary transition-colors">
-                                <span class="material-symbols-outlined text-[20px]">lock</span>
-                            </div>
-                            <button type="button" @click="showPassword = !showPassword"
-                                class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors cursor-pointer outline-none">
-                                <span class="material-symbols-outlined" style="font-size: 20px;">
-                                    {{ showPassword ? 'visibility_off' : 'visibility' }}
-                                </span>
-                            </button>
-                        </div>
+                    <div class="relative">
+                        <input v-model="loginForm.password" :type="showPassword ? 'text' : 'password'" required
+                            placeholder="Contraseña"
+                            class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 pl-11 pr-12 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none transition-all" />
+                        <span
+                            class="material-symbols-outlined absolute left-3.5 top-3.5 text-mako-500 peer-focus:text-primary transition-colors">lock</span>
+                        <button type="button" @click="showPassword = !showPassword"
+                            class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility'
+                            }}</span>
+                        </button>
                     </div>
                 </div>
 
                 <div v-else class="flex flex-col gap-5 animate-in fade-in slide-in-from-right-8 duration-300">
-                    <div
-                        class="p-4 rounded-xl border border-primary/20 bg-primary/5 text-center shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-                        <p class="text-[0.65rem] text-primary/80 uppercase tracking-widest font-bold mb-2">
-                            Paso Final
+                    <div class="p-4 rounded-xl border border-primary/20 bg-primary/5 text-center">
+                        <p class="text-[0.65rem] text-primary/80 uppercase tracking-widest font-bold mb-2">Verificación
                         </p>
-                        <p class="text-sm text-mako-300">Para verificar que eres tú, ingresa tu respuesta secreta.</p>
+                        <p class="text-sm text-mako-300">Ingresa tu respuesta de seguridad.</p>
                     </div>
 
-                    <div class="group relative">
-                        <div class="relative flex items-center">
-                            <input v-model="loginForm.security_answer" :type="showSecurityAnswer ? 'text' : 'password'"
-                                required placeholder="Tu respuesta secreta" autofocus
-                                class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none focus:ring-0 transition-all duration-200 text-center" />
-                            <button type="button" @click="showSecurityAnswer = !showSecurityAnswer"
-                                class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors cursor-pointer outline-none">
-                                <span class="material-symbols-outlined" style="font-size: 20px;">
-                                    {{ showSecurityAnswer ? 'visibility_off' : 'visibility' }}
-                                </span>
-                            </button>
-                        </div>
+                    <div class="relative">
+                        <input v-model="loginForm.security_answer" :type="showSecurityAnswer ? 'text' : 'password'"
+                            required placeholder="Tu respuesta secreta" autofocus
+                            class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none text-center transition-all" />
+                        <button type="button" @click="showSecurityAnswer = !showSecurityAnswer"
+                            class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">{{ showSecurityAnswer ? 'visibility_off' :
+                                'visibility' }}</span>
+                        </button>
                     </div>
 
                     <button type="button" @click="loginStep = 1"
                         class="text-xs text-mako-500 hover:text-white transition-colors text-center flex items-center justify-center gap-1">
-                        <span class="material-symbols-outlined text-sm">arrow_back</span>
-                        Corregir contraseña
+                        <span class="material-symbols-outlined text-sm">arrow_back</span> Corregir datos
                     </button>
                 </div>
 
@@ -238,65 +263,63 @@ const toggleView = () => {
                     {{ errorMsg }}
                 </div>
 
-                <div class="flex flex-col gap-6 mt-2">
-                    <button type="submit" :disabled="loading"
-                        class="w-full rounded-xl bg-primary py-3.5 text-center text-base font-bold text-white shadow-[0_0_20px_rgba(19,91,236,0.3)] hover:bg-blue-600 hover:shadow-[0_0_30px_rgba(19,91,236,0.5)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden relative group">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]">
-                        </div>
-                        <span v-if="loading" class="flex items-center justify-center gap-2">
-                            <span
-                                class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                            Procesando...
-                        </span>
-                        <span v-else>{{ loginStep === 1 ? 'Continuar' : 'Desbloquear Cuenta' }}</span>
-                    </button>
+                <button type="submit" :disabled="loading"
+                    class="w-full rounded-xl bg-primary py-3.5 text-center text-base font-bold text-white shadow-lg hover:bg-blue-600 transition-all disabled:opacity-50 group relative overflow-hidden">
+                    <span v-if="loading">Procesando...</span>
+                    <span v-else>{{ loginStep === 1 ? 'Continuar' : 'Desbloquear Bóveda' }}</span>
+                </button>
 
-                    <div v-if="loginStep === 1" class="flex flex-col items-center gap-4">
-                        <p class="text-sm text-mako-400">
-                            ¿No tienes cuenta?
-                            <button type="button" @click="toggleView"
-                                class="font-bold text-white hover:text-primary hover:underline decoration-primary underline-offset-4 transition-colors ml-1">
-                                Crear Cuenta
-                            </button>
-                        </p>
-                    </div>
+                <div v-if="loginStep === 1" class="flex justify-center mt-2">
+                    <button type="button" @click="toggleView"
+                        class="text-sm text-mako-400 hover:text-white transition-colors">
+                        ¿No tienes cuenta? <span
+                            class="font-bold text-white underline decoration-primary underline-offset-4">Crear
+                            Cuenta</span>
+                    </button>
                 </div>
             </form>
 
-            <form v-else @submit.prevent="handleRegister" class="flex flex-col gap-4">
-                <div class="flex gap-4">
-                    <div class="group relative w-2/3">
-                        <input v-model="registerForm.username" type="text" required placeholder="Nombre"
-                            class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
-                    </div>
-                    <div class="group relative w-1/3">
-                        <input v-model="registerForm.pin_boveda" type="text" required maxlength="4" placeholder="PIN"
-                            pattern="\d{4}" title="Debe ser un PIN de 4 dígitos numéricos"
-                            class="block w-full rounded-xl border border-white/10 bg-black/20 px-2 py-3.5 text-center text-base tracking-widest text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
-                    </div>
+            <form v-else @submit.prevent="registerStep === 1 ? nextRegisterStep() : handleRegister()"
+                class="flex flex-col gap-4">
+
+                <div v-if="registerStep === 1" class="flex flex-col gap-4 animate-in fade-in slide-in-from-left-4">
+                    <input v-model="registerForm.username" type="text" required placeholder="Nombre de usuario"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+
+                    <input v-model="registerForm.email" type="email" required placeholder="Correo electrónico"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+
+                    <input v-model="registerForm.password" type="password" required placeholder="Contraseña maestra"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+
+                    <input v-model="registerForm.confirmPassword" type="password" required
+                        placeholder="Confirmar contraseña"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
                 </div>
 
-                <input v-model="registerForm.email" type="email" required placeholder="Correo electrónico"
-                    class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                <div v-else class="flex flex-col gap-4 animate-in fade-in slide-in-from-right-8">
+                    <div class="text-center mb-2">
+                        <span
+                            class="text-[0.65rem] font-bold text-mako-500 uppercase tracking-widest border border-white/10 px-2 py-1 rounded bg-black/20">Configuración
+                            de Rescate</span>
+                    </div>
 
-                <input v-model="registerForm.password" type="password" required placeholder="Contraseña maestra"
-                    class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                    <input v-model="registerForm.pin_boveda" type="text" required maxlength="4"
+                        placeholder="PIN de 4 Dígitos" pattern="\d{4}"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-center tracking-[0.5em] text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors font-mono" />
 
-                <input v-model="registerForm.confirmPassword" type="password" required
-                    placeholder="Confirmar contraseña"
-                    class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
-
-                <div class="pt-4 border-t border-white/10 flex flex-col gap-4">
-                    <p class="text-[0.65rem] text-mako-400 text-center uppercase tracking-widest font-bold">Seguridad de
-                        Recuperación</p>
                     <input v-model="registerForm.pregunta_seguridad" type="text" required
-                        placeholder="Pregunta (Ej: Nombre primer mascota)"
-                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                        placeholder="Pregunta (Ej: Primer mascota)"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
 
                     <input v-model="registerForm.respuesta_seguridad" type="text" required
-                        placeholder="Respuesta secreta (NO OLVIDAR)"
-                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                        placeholder="Respuesta secreta"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+
+                    <button type="button" @click="registerStep = 1"
+                        class="text-xs text-mako-500 hover:text-white transition-colors text-center flex items-center justify-center gap-1 mt-2">
+                        <span class="material-symbols-outlined text-sm">arrow_back</span> Volver a credenciales
+                    </button>
                 </div>
 
                 <div v-if="errorMsg"
@@ -304,21 +327,19 @@ const toggleView = () => {
                     {{ errorMsg }}
                 </div>
 
-                <div class="flex flex-col gap-6 mt-2">
-                    <button type="submit" :disabled="loading"
-                        class="w-full rounded-xl bg-primary py-3.5 text-center text-base font-bold text-white shadow-[0_0_20px_rgba(19,91,236,0.3)] hover:bg-blue-600 hover:shadow-[0_0_30px_rgba(19,91,236,0.5)] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span v-if="loading">Creando...</span>
-                        <span v-else>Registrarme</span>
+                <button type="submit" :disabled="loading"
+                    class="w-full rounded-xl bg-primary py-3.5 text-center text-base font-bold text-white shadow-lg hover:bg-blue-600 transition-all disabled:opacity-50 mt-2">
+                    <span v-if="loading">Registrando...</span>
+                    <span v-else>{{ registerStep === 1 ? 'Siguiente Paso' : 'Finalizar y Descargar Kit' }}</span>
+                </button>
+
+                <div class="flex justify-center mt-2">
+                    <button type="button" @click="toggleView"
+                        class="text-sm text-mako-400 hover:text-white transition-colors">
+                        ¿Ya tienes cuenta? <span
+                            class="font-bold text-white underline decoration-primary underline-offset-4">Iniciar
+                            Sesión</span>
                     </button>
-                    <div class="flex flex-col items-center gap-4">
-                        <p class="text-sm text-mako-400">
-                            ¿Ya tienes cuenta?
-                            <button type="button" @click="toggleView"
-                                class="font-bold text-white hover:text-primary hover:underline decoration-primary underline-offset-4 transition-colors ml-1">
-                                Iniciar Sesión
-                            </button>
-                        </p>
-                    </div>
                 </div>
             </form>
         </div>
@@ -326,6 +347,7 @@ const toggleView = () => {
 </template>
 
 <style scoped>
+/* Estilos para autocompletado del navegador */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -335,11 +357,5 @@ input:-webkit-autofill:active {
     caret-color: white;
     border-radius: 0.75rem;
     transition: background-color 5000s ease-in-out 0s;
-}
-
-@keyframes shimmer {
-    100% {
-        transform: translateX(100%);
-    }
 }
 </style>
