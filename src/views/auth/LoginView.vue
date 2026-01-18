@@ -11,11 +11,12 @@ const authStore = useAuthStore();
 const isLogin = ref(true); // true = Login, false = Registro
 const loading = ref(false);
 const errorMsg = ref('');
+const warningMsg = ref(''); // Nueva alerta de "Muerte Súbita"
 const showPassword = ref(false);
+const showSecurityAnswer = ref(false);
 
-// Estado para el "Desafío de Seguridad" (Paso 2 del Login)
-const mfaStep = ref(false);
-const mfaQuestion = ref('');
+// Estado para el Flujo de 2 Pasos (Opción B)
+const loginStep = ref(1); // 1: Credenciales, 2: Respuesta de Seguridad
 
 // Datos del formulario
 const loginForm = reactive({ email: '', password: '', security_answer: '' });
@@ -24,40 +25,52 @@ const registerForm = reactive({
     pregunta_seguridad: '', respuesta_seguridad: '', pin_boveda: ''
 });
 
-// --- LOGIN CON SEGURIDAD ---
+// --- LÓGICA DE LOGIN ---
+
+const nextStep = () => {
+    if (loginForm.email && loginForm.password) {
+        errorMsg.value = '';
+        warningMsg.value = '';
+        loginStep.value = 2; // Avanzamos a la respuesta de seguridad
+    } else {
+        errorMsg.value = "Por favor ingresa correo y contraseña.";
+    }
+};
+
 const handleLogin = async () => {
     loading.value = true;
     errorMsg.value = '';
+    warningMsg.value = '';
 
     try {
-        const respuestaEnviar = mfaStep.value ? loginForm.security_answer : '';
-
         await authStore.login({
             email: loginForm.email,
             password: loginForm.password,
-            security_answer: respuestaEnviar
+            security_answer: loginForm.security_answer
         });
-
         router.push('/dashboard');
-
     } catch (err) {
-        if (err.response) console.log("Respuesta del error:", err.response.data);
-
         const data = err.response?.data || {};
-        const code = Array.isArray(data.code) ? data.code[0] : data.code;
-        const question = Array.isArray(data.question) ? data.question[0] : data.question;
+        const detail = data.detail || 'Error al iniciar sesión.';
 
-        if (code === 'mfa_required') {
-            mfaQuestion.value = question;
-            mfaStep.value = true;
-            errorMsg.value = '';
-        } else {
-            let mensaje = data.detail || 'Error al iniciar sesión.';
-            if (Array.isArray(mensaje)) mensaje = mensaje[0];
-            if (!data.detail && typeof data === 'object') {
-                mensaje = Object.values(data).flat().join('\n');
+        if (typeof detail === 'string') {
+            if (detail.includes('intentos')) {
+                // Intentamos extraer el número de intentos restantes
+                const match = detail.match(/quedan (\d+)/);
+                const intentosRestantes = match ? parseInt(match[1]) : 10;
+
+                if (intentosRestantes <= 5) {
+                    warningMsg.value = `⚠️ ¡CUIDADO! Credenciales o respuesta incorrecta. Te quedan ${intentosRestantes} intentos de 10. Al terminar tus intentos se borrarán tus datos.`;
+                } else {
+                    errorMsg.value = "Credenciales o respuesta de seguridad incorrecta.";
+                }
+            } else if (detail.includes('eliminados')) {
+                errorMsg.value = "💀 CUENTA ELIMINADA POR SEGURIDAD.";
+            } else {
+                errorMsg.value = detail;
             }
-            errorMsg.value = mensaje;
+        } else {
+            errorMsg.value = "Error de conexión o formato desconocido.";
         }
     } finally {
         loading.value = false;
@@ -75,13 +88,23 @@ const handleRegister = async () => {
         return;
     }
 
+    // Validación básica de PIN
+    if (registerForm.pin_boveda.length !== 4 || isNaN(registerForm.pin_boveda)) {
+        errorMsg.value = 'El PIN debe ser de 4 números.';
+        loading.value = false;
+        return;
+    }
+
     try {
         await authService.register(registerForm);
-        alert('¡Cuenta creada exitosamente! Ahora inicia sesión.');
+        alert('¡Cuenta creada exitosamente! Recuerda tu respuesta de seguridad.');
         toggleView();
     } catch (err) {
         if (err.response && err.response.data) {
-            const errors = Object.values(err.response.data).flat().join('\n');
+            // Manejo genérico de errores de registro (ej: email duplicado)
+            const errors = typeof err.response.data === 'object'
+                ? Object.values(err.response.data).flat().join('\n')
+                : 'Error en el registro';
             errorMsg.value = errors;
         } else {
             errorMsg.value = 'Error de conexión';
@@ -94,7 +117,8 @@ const handleRegister = async () => {
 const toggleView = () => {
     isLogin.value = !isLogin.value;
     errorMsg.value = '';
-    mfaStep.value = false;
+    warningMsg.value = '';
+    loginStep.value = 1; // Resetear paso
     registerForm.password = '';
     registerForm.confirmPassword = '';
 };
@@ -131,16 +155,18 @@ const toggleView = () => {
                 </div>
 
                 <h1 class="text-2xl font-bold tracking-tight text-white mb-1 drop-shadow-md">
-                    {{ isLogin ? 'Bienvenido a Niun' : 'Crear Cuenta' }}
+                    {{ isLogin ? (loginStep === 1 ? 'Bienvenido a Niun' : 'Control de Seguridad') : 'Crear Cuenta' }}
                 </h1>
                 <p class="text-mako-400 text-sm font-medium tracking-wide">
-                    {{ isLogin ? 'Niun drama, ni un problema' : 'Configura tu acceso seguro.' }}
+                    {{ isLogin ? (loginStep === 1 ? 'Niun drama, ni un problema' : 'Ingresa tu llave maestra.') :
+                        'Configura tu acceso seguro.' }}
                 </p>
             </div>
 
-            <form v-if="isLogin" @submit.prevent="handleLogin" class="flex flex-col gap-5">
+            <form v-if="isLogin" @submit.prevent="loginStep === 1 ? nextStep() : handleLogin()"
+                class="flex flex-col gap-5">
 
-                <div v-if="!mfaStep" class="flex flex-col gap-5">
+                <div v-if="loginStep === 1" class="flex flex-col gap-5 animate-in fade-in slide-in-from-left-4">
                     <div class="group relative">
                         <label class="sr-only" for="email">Correo electrónico</label>
                         <div class="relative">
@@ -177,26 +203,39 @@ const toggleView = () => {
                 <div v-else class="flex flex-col gap-5 animate-in fade-in slide-in-from-right-8 duration-300">
                     <div
                         class="p-4 rounded-xl border border-primary/20 bg-primary/5 text-center shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-                        <p class="text-[0.65rem] text-primary/80 uppercase tracking-widest font-bold mb-2">Control de
-                            Seguridad
+                        <p class="text-[0.65rem] text-primary/80 uppercase tracking-widest font-bold mb-2">
+                            Paso Final
                         </p>
-                        <p class="text-lg font-bold text-white">¿ {{ mfaQuestion }} ?</p>
+                        <p class="text-sm text-mako-300">Para verificar que eres tú, ingresa tu respuesta secreta.</p>
                     </div>
 
                     <div class="group relative">
-                        <input v-model="loginForm.security_answer" type="text" required
-                            placeholder="Escribe tu respuesta..." autofocus
-                            class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none focus:ring-0 transition-all duration-200 text-center" />
+                        <div class="relative flex items-center">
+                            <input v-model="loginForm.security_answer" :type="showSecurityAnswer ? 'text' : 'password'"
+                                required placeholder="Tu respuesta secreta" autofocus
+                                class="peer block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:bg-black/40 focus:outline-none focus:ring-0 transition-all duration-200 text-center" />
+                            <button type="button" @click="showSecurityAnswer = !showSecurityAnswer"
+                                class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors cursor-pointer outline-none">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">
+                                    {{ showSecurityAnswer ? 'visibility_off' : 'visibility' }}
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
-                    <button type="button" @click="mfaStep = false"
+                    <button type="button" @click="loginStep = 1"
                         class="text-xs text-mako-500 hover:text-white transition-colors text-center flex items-center justify-center gap-1">
                         <span class="material-symbols-outlined text-sm">arrow_back</span>
-                        Volver a contraseña
+                        Corregir contraseña
                     </button>
                 </div>
 
-                <div v-if="errorMsg"
+                <div v-if="warningMsg"
+                    class="text-red-200 text-sm font-bold text-center bg-red-600/20 py-3 px-2 rounded-lg border border-red-500 animate-pulse whitespace-pre-line">
+                    {{ warningMsg }}
+                </div>
+
+                <div v-if="errorMsg && !warningMsg"
                     class="text-red-400 text-sm text-center bg-red-500/10 py-2.5 rounded-lg border border-red-500/20 whitespace-pre-line animate-in fade-in zoom-in-95">
                     {{ errorMsg }}
                 </div>
@@ -212,10 +251,10 @@ const toggleView = () => {
                                 class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                             Procesando...
                         </span>
-                        <span v-else>{{ mfaStep ? 'Verificar Respuesta' : 'Iniciar Sesión' }}</span>
+                        <span v-else>{{ loginStep === 1 ? 'Continuar' : 'Desbloquear Cuenta' }}</span>
                     </button>
 
-                    <div v-if="!mfaStep" class="flex flex-col items-center gap-4">
+                    <div v-if="loginStep === 1" class="flex flex-col items-center gap-4">
                         <p class="text-sm text-mako-400">
                             ¿No tienes cuenta?
                             <button type="button" @click="toggleView"
@@ -251,14 +290,14 @@ const toggleView = () => {
                     class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
 
                 <div class="pt-4 border-t border-white/10 flex flex-col gap-4">
-                    <p class="text-[0.65rem] text-mako-400 text-center uppercase tracking-widest font-bold">Recuperación
-                    </p>
+                    <p class="text-[0.65rem] text-mako-400 text-center uppercase tracking-widest font-bold">Seguridad de
+                        Recuperación</p>
                     <input v-model="registerForm.pregunta_seguridad" type="text" required
                         placeholder="Pregunta (Ej: Nombre primer mascota)"
                         class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
 
                     <input v-model="registerForm.respuesta_seguridad" type="text" required
-                        placeholder="Respuesta secreta"
+                        placeholder="Respuesta secreta (NO OLVIDAR)"
                         class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-base text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
                 </div>
 
@@ -295,7 +334,6 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #151618 inset !important;
-    /* Un tono más oscuro para el relleno */
     -webkit-text-fill-color: #ffffff !important;
     caret-color: white;
     border-radius: 0.75rem;
