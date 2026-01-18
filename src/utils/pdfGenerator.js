@@ -56,7 +56,7 @@ export const generateSecurityPDF = (userData) => {
 
   doc.setFont('helvetica', 'italic')
   doc.setTextColor(150)
-  doc.text('[ ]', xValue, y)
+  doc.text(' ', xValue, y)
 
   y += 30
 

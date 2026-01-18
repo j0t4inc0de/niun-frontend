@@ -3,7 +3,7 @@ import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import authService from '@/services/auth';
-import { generateSecurityPDF } from '@/utils/pdfGenerator'; // Importación agregada
+import { generateSecurityPDF } from '@/utils/pdfGenerator';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -224,7 +224,7 @@ const toggleView = () => {
                         <button type="button" @click="showPassword = !showPassword"
                             class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors">
                             <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility'
-                            }}</span>
+                                }}</span>
                         </button>
                     </div>
                 </div>
@@ -298,11 +298,6 @@ const toggleView = () => {
                 </div>
 
                 <div v-else class="flex flex-col gap-4 animate-in fade-in slide-in-from-right-8">
-                    <div class="text-center mb-2">
-                        <span
-                            class="text-[0.65rem] font-bold text-mako-500 uppercase tracking-widest border border-white/10 px-2 py-1 rounded bg-black/20">Configuración
-                            de Rescate</span>
-                    </div>
 
                     <input v-model="registerForm.pin_boveda" type="text" required maxlength="4"
                         placeholder="PIN de 4 Dígitos" pattern="\d{4}"
@@ -330,7 +325,7 @@ const toggleView = () => {
                 <button type="submit" :disabled="loading"
                     class="w-full rounded-xl bg-primary py-3.5 text-center text-base font-bold text-white shadow-lg hover:bg-blue-600 transition-all disabled:opacity-50 mt-2">
                     <span v-if="loading">Registrando...</span>
-                    <span v-else>{{ registerStep === 1 ? 'Siguiente Paso' : 'Finalizar y Descargar Kit' }}</span>
+                    <span v-else>{{ registerStep === 1 ? 'Siguiente Paso' : 'Finalizar' }}</span>
                 </button>
 
                 <div class="flex justify-center mt-2">
