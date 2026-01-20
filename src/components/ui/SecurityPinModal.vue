@@ -30,7 +30,7 @@ const verifyPin = async () => {
 
         // Lógica de muerte súbita para el PIN
         if (detail.includes('eliminada')) {
-            alert("💀 CUENTA ELIMINADA: Límite de intentos excedido.");
+            alert("Tu cuenta ha sido eliminada permanentemente por seguridad debido a múltiples intentos fallidos.");
             authStore.logout();
         } else if (detail.includes('quedan')) {
             attemptsWarning.value = `⚠️ ${detail}`;

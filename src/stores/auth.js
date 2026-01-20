@@ -71,7 +71,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('refresh_token')
 
         alert(
-          '💀 GAME OVER 💀\n\nTu cuenta ha sido eliminada permanentemente por seguridad debido a múltiples intentos fallidos.',
+          'Tu cuenta ha sido eliminada permanentemente por seguridad debido a múltiples intentos fallidos.',
         )
 
         window.location.href = '/login'
