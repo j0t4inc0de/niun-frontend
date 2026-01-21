@@ -30,6 +30,11 @@ const router = createRouter({
           name: 'cuentas',
           component: () => import('../components/CuentasLista.vue'),
         },
+        {
+          path: 'boveda',
+          name: 'boveda',
+          component: () => import('../views/dashboard/BovedaView.vue'),
+        },
         // Ruta para testear componentes:  Sandbox
         {
           path: 'test',
@@ -45,7 +50,6 @@ const router = createRouter({
   ],
 })
 
-// Guardia de Navegación (Igual que antes)
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
