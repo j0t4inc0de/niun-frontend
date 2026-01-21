@@ -231,7 +231,7 @@ const toggleView = () => {
                         <button type="button" @click="showPassword = !showPassword"
                             class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors">
                             <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility'
-                            }}</span>
+                                }}</span>
                         </button>
                     </div>
                 </div>
@@ -306,18 +306,31 @@ const toggleView = () => {
 
                 <div v-else class="flex flex-col gap-4 animate-in fade-in slide-in-from-right-8">
 
-                    <input v-model="registerForm.pin_boveda" type="tel" required maxlength="4"
-                        placeholder="PIN de 4 Dígitos" pattern="\d{4}" inputmode="numeric"
-                        @input="registerForm.pin_boveda = registerForm.pin_boveda.replace(/\D/g, '')"
-                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-center text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors font-mono" />
+                    <div class="text-center mb-2">
+                        <h3 class="text-white font-medium">Configura tu seguridad</h3>
+                    </div>
 
-                    <input v-model="registerForm.pregunta_seguridad" type="text" required
-                        placeholder="Pregunta (Ej: Primer mascota)"
-                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-mako-400 ml-1">Crea tu PIN de acceso</label>
+                        <input v-model="registerForm.pin_boveda" type="tel" required maxlength="4"
+                            placeholder="Ej: 2580" pattern="\d{4}" inputmode="numeric"
+                            @input="registerForm.pin_boveda = registerForm.pin_boveda.replace(/\D/g, '')"
+                            class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-center text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors font-mono tracking-widest" />
+                    </div>
 
-                    <input v-model="registerForm.respuesta_seguridad" type="text" required
-                        placeholder="Respuesta secreta"
-                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-mako-400 ml-1">Crea una pregunta de seguridad</label>
+                        <input v-model="registerForm.pregunta_seguridad" type="text" required
+                            placeholder="Ej: ¿Nombre de mi primera mascota?"
+                            class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-mako-400 ml-1">Respuesta secreta</label>
+                        <input v-model="registerForm.respuesta_seguridad" type="text" required
+                            placeholder="Tu respuesta"
+                            class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors" />
+                    </div>
 
                     <button type="button" @click="registerStep = 1"
                         class="text-xs text-mako-500 hover:text-white transition-colors text-center flex items-center justify-center gap-1 mt-2">
