@@ -113,6 +113,13 @@ const handleRegister = async () => {
     loading.value = true;
     errorMsg.value = '';
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(registerForm.email)) {
+        errorMsg.value = "Por favor, ingresa un correo electrónico válido.";
+        loading.value = false;
+        return;
+    }
+
     // Validaciones paso 2
     if (registerForm.pin_boveda.length !== 4 || isNaN(registerForm.pin_boveda)) {
         errorMsg.value = 'El PIN debe ser de 4 números.';
@@ -224,7 +231,7 @@ const toggleView = () => {
                         <button type="button" @click="showPassword = !showPassword"
                             class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors">
                             <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility'
-                                }}</span>
+                            }}</span>
                         </button>
                     </div>
                 </div>
@@ -299,9 +306,10 @@ const toggleView = () => {
 
                 <div v-else class="flex flex-col gap-4 animate-in fade-in slide-in-from-right-8">
 
-                    <input v-model="registerForm.pin_boveda" type="text" required maxlength="4"
-                        placeholder="PIN de 4 Dígitos" pattern="\d{4}"
-                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-center tracking-[0.5em] text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors font-mono" />
+                    <input v-model="registerForm.pin_boveda" type="tel" required maxlength="4"
+                        placeholder="PIN de 4 Dígitos" pattern="\d{4}" inputmode="numeric"
+                        @input="registerForm.pin_boveda = registerForm.pin_boveda.replace(/\D/g, '')"
+                        class="block w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-center text-white placeholder-mako-600 focus:border-primary/50 focus:outline-none transition-colors font-mono" />
 
                     <input v-model="registerForm.pregunta_seguridad" type="text" required
                         placeholder="Pregunta (Ej: Primer mascota)"
