@@ -18,7 +18,6 @@ export const obtenerAnuncios = async (token) => {
     },
   }
 
-  console.log(`📡 Servicio: Conectando a ${API_URL}`)
   const response = await axios.get(API_URL, config)
 
   if (Array.isArray(response.data)) {
