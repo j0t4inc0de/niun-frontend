@@ -1,5 +1,8 @@
 // src/services/files.js
+import axios from 'axios'
 import http from './api/http'
+
+const API_URL = import.meta.env.VITE_API_BASE_URL
 
 export default {
   listar() {
@@ -7,9 +10,11 @@ export default {
   },
 
   subir(formData) {
-    return http.post('/files/', formData, {
+    const token = localStorage.getItem('access_token')
+
+    return axios.post(`${API_URL}/files/`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
       },
     })
   },
