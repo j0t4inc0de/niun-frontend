@@ -9,7 +9,7 @@ export default {
   subir(formData) {
     return http.post('/files/', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': undefined,
       },
     })
   },
