@@ -85,7 +85,7 @@ const handleLogout = () => {
                     <span class="font-medium tracking-wide">Cuentas</span>
                 </router-link>
 
-                <router-link to="/boveda" @click="isMobileMenuOpen = false"
+                <router-link :to="{ name: 'boveda' }" @click="isMobileMenuOpen = false"
                     active-class="bg-gradient-to-r from-primary/15 to-transparent border-l-4 border-primary text-white shadow-[0_0_20px_rgba(19,91,236,0.15)]"
                     class="flex items-center gap-4 px-4 py-3.5 rounded-r-2xl border-l-4 border-transparent text-mako-400 hover:text-white hover:bg-white/5 transition-all duration-200 group">
                     <span
