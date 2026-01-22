@@ -47,32 +47,25 @@ const handleLogout = () => {
                             class="absolute inset-0 bg-primary/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
 
-                        <svg class="w-10 h-10 drop-shadow-md" viewBox="0 0 100 100" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="w-10 h-10 drop-shadow-md"
+                            viewBox="0 0 100 100">
                             <defs>
-                                <linearGradient id="miniNiunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <linearGradient id="miniNiunGradient" x1="0%" x2="100%" y1="0%" y2="100%">
                                     <stop offset="0%" stop-color="#135bec" />
                                     <stop offset="100%" stop-color="#3b82f6" />
                                 </linearGradient>
                             </defs>
-
-                            <path
-                                d="M22 16C19 16 16 19 16 22V78C16 81 19 84 22 84H28C31 84 34 81 34 78V22C34 19 31 16 28 16H22Z"
-                                fill="white" class="group-hover:brightness-110 transition-all" />
-
-                            <path
-                                d="M72 16C69 16 66 19 66 22V78C66 81 69 84 72 84H78C81 84 84 81 84 78V22C84 19 81 16 78 16H72Z"
-                                fill="white" class="group-hover:brightness-110 transition-all" />
-
-                            <path d="M34 26 L66 74" stroke="url(#miniNiunGradient)" stroke-width="12"
-                                stroke-linecap="round"
+                            <path fill="#fff"
+                                d="M22 16c-3 0-6 3-6 6v56c0 3 3 6 6 6h6c3 0 6-3 6-6V22c0-3-3-6-6-6zm50 0c-3 0-6 3-6 6v56c0 3 3 6 6 6h6c3 0 6-3 6-6V22c0-3-3-6-6-6z"
+                                class="group-hover:brightness-110 transition-all" />
+                            <path stroke="url(#miniNiunGradient)" stroke-linecap="round" stroke-width="12"
+                                d="m34 26 32 48"
                                 class="transition-all duration-300 opacity-90 group-hover:opacity-100 group-hover:stroke-[14]" />
-
                             <g
                                 class="origin-center transition-transform duration-700 ease-out group-hover:rotate-[180deg]">
-                                <rect x="43" y="43" width="14" height="14" rx="2" transform="rotate(45 50 50)"
-                                    fill="white"
-                                    class="drop-shadow-sm group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all" />
+                                <rect width="14" height="14" x="43" y="43" fill="#fff"
+                                    class="drop-shadow-sm group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all"
+                                    rx="2" transform="rotate(45 50 50)" />
                             </g>
                         </svg>
                     </div>
@@ -152,32 +145,25 @@ const handleLogout = () => {
                 class="md:hidden flex items-center justify-between p-4 bg-mako-950/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-20">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                        <svg class="w-10 h-10 drop-shadow-md" viewBox="0 0 100 100" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="w-10 h-10 drop-shadow-md"
+                            viewBox="0 0 100 100">
                             <defs>
-                                <linearGradient id="miniNiunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <linearGradient id="miniNiunGradient" x1="0%" x2="100%" y1="0%" y2="100%">
                                     <stop offset="0%" stop-color="#135bec" />
                                     <stop offset="100%" stop-color="#3b82f6" />
                                 </linearGradient>
                             </defs>
-
-                            <path
-                                d="M22 16C19 16 16 19 16 22V78C16 81 19 84 22 84H28C31 84 34 81 34 78V22C34 19 31 16 28 16H22Z"
-                                fill="white" class="group-hover:brightness-110 transition-all" />
-
-                            <path
-                                d="M72 16C69 16 66 19 66 22V78C66 81 69 84 72 84H78C81 84 84 81 84 78V22C84 19 81 16 78 16H72Z"
-                                fill="white" class="group-hover:brightness-110 transition-all" />
-
-                            <path d="M34 26 L66 74" stroke="url(#miniNiunGradient)" stroke-width="12"
-                                stroke-linecap="round"
+                            <path fill="#fff"
+                                d="M22 16c-3 0-6 3-6 6v56c0 3 3 6 6 6h6c3 0 6-3 6-6V22c0-3-3-6-6-6zm50 0c-3 0-6 3-6 6v56c0 3 3 6 6 6h6c3 0 6-3 6-6V22c0-3-3-6-6-6z"
+                                class="group-hover:brightness-110 transition-all" />
+                            <path stroke="url(#miniNiunGradient)" stroke-linecap="round" stroke-width="12"
+                                d="m34 26 32 48"
                                 class="transition-all duration-300 opacity-90 group-hover:opacity-100 group-hover:stroke-[14]" />
-
                             <g
                                 class="origin-center transition-transform duration-700 ease-out group-hover:rotate-[180deg]">
-                                <rect x="43" y="43" width="14" height="14" rx="2" transform="rotate(45 50 50)"
-                                    fill="white"
-                                    class="drop-shadow-sm group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all" />
+                                <rect width="14" height="14" x="43" y="43" fill="#fff"
+                                    class="drop-shadow-sm group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all"
+                                    rx="2" transform="rotate(45 50 50)" />
                             </g>
                         </svg>
                     </div>
