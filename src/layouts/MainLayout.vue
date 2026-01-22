@@ -39,19 +39,49 @@ const handleLogout = () => {
 
             <div class="h-24 flex items-center px-8 border-b border-white/5">
                 <div class="flex items-center gap-3 group cursor-pointer select-none">
+
                     <div
-                        class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-mako-800 to-black border border-white/10 flex items-center justify-center shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
+                        class="relative w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+
                         <div
-                            class="w-4 h-4 bg-primary rounded-sm rotate-45 group-hover:rotate-90 transition-transform duration-500">
+                            class="absolute inset-0 bg-primary/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
-                        <div
-                            class="absolute inset-0 bg-primary/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity">
-                        </div>
+
+                        <svg class="w-10 h-10 drop-shadow-md" viewBox="0 0 100 100" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="miniNiunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#135bec" />
+                                    <stop offset="100%" stop-color="#3b82f6" />
+                                </linearGradient>
+                            </defs>
+
+                            <path
+                                d="M22 16C19 16 16 19 16 22V78C16 81 19 84 22 84H28C31 84 34 81 34 78V22C34 19 31 16 28 16H22Z"
+                                fill="white" class="group-hover:brightness-110 transition-all" />
+
+                            <path
+                                d="M72 16C69 16 66 19 66 22V78C66 81 69 84 72 84H78C81 84 84 81 84 78V22C84 19 81 16 78 16H72Z"
+                                fill="white" class="group-hover:brightness-110 transition-all" />
+
+                            <path d="M34 26 L66 74" stroke="url(#miniNiunGradient)" stroke-width="12"
+                                stroke-linecap="round"
+                                class="transition-all duration-300 opacity-90 group-hover:opacity-100 group-hover:stroke-[14]" />
+
+                            <g
+                                class="origin-center transition-transform duration-700 ease-out group-hover:rotate-[180deg]">
+                                <rect x="43" y="43" width="14" height="14" rx="2" transform="rotate(45 50 50)"
+                                    fill="white"
+                                    class="drop-shadow-sm group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all" />
+                            </g>
+                        </svg>
                     </div>
+
                     <div class="flex flex-col">
-                        <span class="text-xl font-bold tracking-tight text-white leading-none">Niun</span>
                         <span
-                            class="text-[0.65rem] font-bold text-primary tracking-[0.25em] uppercase mt-1">Vault</span>
+                            class="text-xl font-bold tracking-tight text-white leading-none group-hover:text-primary-100 transition-colors">Niun</span>
+                        <span
+                            class="text-[0.65rem] font-bold text-primary tracking-[0.25em] uppercase mt-1 group-hover:text-white transition-colors">Vault</span>
                     </div>
                 </div>
 
