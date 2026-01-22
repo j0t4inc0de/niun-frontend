@@ -5,9 +5,8 @@ import authService from '../services/auth'
 import router from '../router'
 
 export const useAuthStore = defineStore('auth', () => {
-  // Estado
   const user = ref(null)
-  const token = ref(localStorage.getItem('access_token'))
+  const token = ref(sessionStorage.getItem('access_token'))
 
   // Getters
   const isAuthenticated = computed(() => !!token.value)
@@ -15,7 +14,6 @@ export const useAuthStore = defineStore('auth', () => {
   // Acciones
   async function login(credentials) {
     try {
-      // credentials incluye { email, password, security_answer }
       const response = await authService.login(credentials)
 
       const accessToken = response.data.access
@@ -23,14 +21,14 @@ export const useAuthStore = defineStore('auth', () => {
 
       token.value = accessToken
 
-      localStorage.setItem('access_token', accessToken)
-      localStorage.setItem('refresh_token', refreshToken)
+      sessionStorage.setItem('access_token', accessToken)
+      sessionStorage.setItem('refresh_token', refreshToken)
 
       await fetchUserProfile()
 
       return true
     } catch (error) {
-      handleAuthError(error) // Manejo centralizado de errores críticos
+      handleAuthError(error)
       throw error
     }
   }
@@ -49,26 +47,23 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     user.value = null
     token.value = null
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
 
-    // Redirigir al login
+    sessionStorage.removeItem('access_token')
+    sessionStorage.removeItem('refresh_token')
+
     router.push('/login')
   }
 
-  // Función auxiliar para manejar el "Game Over" y errores de seguridad
   function handleAuthError(error) {
     if (error.response && error.response.data) {
       const detail = error.response.data.detail || ''
 
-      // CASO CRÍTICO: CUENTA ELIMINADA
-      // Detectamos el mensaje específico que manda tu backend cuando borra al usuario
       if (typeof detail === 'string' && detail.includes('eliminados permanentemente')) {
-        // Limpiamos todo rastro local
         user.value = null
         token.value = null
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
+
+        sessionStorage.removeItem('access_token')
+        sessionStorage.removeItem('refresh_token')
 
         alert(
           'Tu cuenta ha sido eliminada permanentemente por seguridad debido a múltiples intentos fallidos.',
