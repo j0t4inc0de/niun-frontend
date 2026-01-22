@@ -151,8 +151,35 @@ const handleLogout = () => {
             <header
                 class="md:hidden flex items-center justify-between p-4 bg-mako-950/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-20">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                        <div class="w-3 h-3 bg-primary rotate-45"></div>
+                    <div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                        <svg class="w-10 h-10 drop-shadow-md" viewBox="0 0 100 100" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="miniNiunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#135bec" />
+                                    <stop offset="100%" stop-color="#3b82f6" />
+                                </linearGradient>
+                            </defs>
+
+                            <path
+                                d="M22 16C19 16 16 19 16 22V78C16 81 19 84 22 84H28C31 84 34 81 34 78V22C34 19 31 16 28 16H22Z"
+                                fill="white" class="group-hover:brightness-110 transition-all" />
+
+                            <path
+                                d="M72 16C69 16 66 19 66 22V78C66 81 69 84 72 84H78C81 84 84 81 84 78V22C84 19 81 16 78 16H72Z"
+                                fill="white" class="group-hover:brightness-110 transition-all" />
+
+                            <path d="M34 26 L66 74" stroke="url(#miniNiunGradient)" stroke-width="12"
+                                stroke-linecap="round"
+                                class="transition-all duration-300 opacity-90 group-hover:opacity-100 group-hover:stroke-[14]" />
+
+                            <g
+                                class="origin-center transition-transform duration-700 ease-out group-hover:rotate-[180deg]">
+                                <rect x="43" y="43" width="14" height="14" rx="2" transform="rotate(45 50 50)"
+                                    fill="white"
+                                    class="drop-shadow-sm group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all" />
+                            </g>
+                        </svg>
                     </div>
                     <span class="font-bold text-lg text-white">Niun</span>
                 </div>
