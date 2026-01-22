@@ -59,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
       return newAccessToken
     } catch (error) {
       console.error('Falló la renovación de token:', error)
-      logout()
+      logout(false)
       throw error
     }
   }
@@ -75,7 +75,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  function logout() {
+  function logout(redirect = true) {
     user.value = null
     token.value = null
     refreshToken.value = null
@@ -83,7 +83,9 @@ export const useAuthStore = defineStore('auth', () => {
     sessionStorage.removeItem('access_token')
     sessionStorage.removeItem('refresh_token')
 
-    router.push('/login')
+    if (redirect) {
+      router.push('/login')
+    }
   }
 
   function handleAuthError(error) {

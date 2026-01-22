@@ -16,6 +16,12 @@ const router = createRouter({
       component: () => import('../views/auth/LoginView.vue'),
     },
     {
+      path: '/session-expired',
+      name: 'session-expired',
+      component: () => import('../views/auth/SessionExpiredView.vue'),
+      meta: { requiresAuth: false },
+    },
+    {
       path: '/dashboard',
       component: () => import('../layouts/MainLayout.vue'),
       meta: { requiresAuth: true },
