@@ -194,13 +194,45 @@ const toggleView = () => {
 
             <div class="flex flex-col items-center justify-center mb-6">
                 <div
-                    class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-mako-800 to-black border border-white/10 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(255,255,255,0.05)] group">
+                    class="group relative w-24 h-24 flex items-center justify-center mb-6 transition-all duration-500 hover:scale-105 select-none">
+
                     <div
-                        class="absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl">
                     </div>
-                    <div
-                        class="w-5 h-5 bg-primary rounded-sm rotate-45 transform shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-                    </div>
+
+                    <svg class="w-20 h-20 drop-shadow-2xl" viewBox="0 0 100 100" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+
+                        <defs>
+                            <linearGradient id="niunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#135bec" />
+                                <stop offset="100%" stop-color="#3b82f6" />
+                            </linearGradient>
+                            <filter id="pillarShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="rgba(0,0,0,0.3)" />
+                            </filter>
+                        </defs>
+
+                        <path
+                            d="M22 16C18.6863 16 16 18.6863 16 22V78C16 81.3137 18.6863 84 22 84H30C33.3137 84 36 81.3137 36 78V22C36 18.6863 33.3137 16 30 16H22Z"
+                            class="fill-white/95 transition-all duration-500 group-hover:fill-white"
+                            filter="url(#pillarShadow)" />
+
+                        <path
+                            d="M70 16C66.6863 16 64 18.6863 64 22V78C64 81.3137 66.6863 84 70 84H78C81.3137 84 84 81.3137 84 78V22C84 18.6863 81.3137 16 78 16H70Z"
+                            class="fill-white/95 transition-all duration-500 group-hover:fill-white"
+                            filter="url(#pillarShadow)" />
+
+                        <path d="M36 28 L64 72" stroke="url(#niunGradient)" stroke-width="14" stroke-linecap="round"
+                            class="transition-all duration-500 opacity-90 group-hover:opacity-100 group-hover:shadow-[0_0_20px_#135bec] group-hover:stroke-[16]"
+                            style="filter: drop-shadow(0 0 5px rgba(19, 91, 236, 0.3));" />
+
+                        <g class="origin-center transition-all duration-1000 ease-in-out group-hover:rotate-[180deg]">
+                            <rect x="43" y="43" width="14" height="14" rx="2" transform="rotate(45 50 50)"
+                                class="fill-white/90 group-hover:fill-white transition-all duration-500 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+                        </g>
+
+                    </svg>
                 </div>
 
                 <h1 class="text-2xl font-bold tracking-tight text-white mb-1 drop-shadow-md text-center">
@@ -231,7 +263,7 @@ const toggleView = () => {
                         <button type="button" @click="showPassword = !showPassword"
                             class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors">
                             <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility'
-                                }}</span>
+                            }}</span>
                         </button>
                     </div>
                 </div>
