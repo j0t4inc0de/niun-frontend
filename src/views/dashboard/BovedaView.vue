@@ -300,18 +300,18 @@ onUnmounted(() => {
 
         <Transition name="fade">
             <div v-if="modalAbierto"
-                class="fixed inset-0 z-50 bg-black flex flex-col h-[100dvh] w-screen overflow-hidden"
+                class="fixed inset-0 z-[100] bg-black flex flex-col h-[100dvh] w-screen overflow-hidden"
                 @touchstart="handleTouchStart" @touchend="handleTouchEnd">
 
                 <nav
                     class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4 pt-6 bg-gradient-to-b from-black/90 via-black/40 to-transparent">
 
-                    <button @click="cerrarModal" class="p-2 text-white hover:scale-110 active:scale-95 transition-all">
+                    <button @click="cerrarModal"
+                        class="p-2 text-white hover:scale-110 active:scale-95 transition-all opacity-80 hover:opacity-100">
                         <span class="material-symbols-outlined text-3xl drop-shadow-lg">arrow_back</span>
                     </button>
-
                     <span v-if="esImagen(archivoActual?.name)"
-                        class="text-white/90 font-medium text-sm tracking-wider font-mono bg-black/40 px-3 py-1 rounded-full backdrop-blur-md border border-white/10">
+                        class="text-white/90 font-medium text-sm tracking-wider font-mono bg-white/5 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
                         {{ contadorTexto }}
                     </span>
 
@@ -344,14 +344,14 @@ onUnmounted(() => {
                     class="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/90 via-black/50 to-transparent pb-8 pt-20 px-6">
                     <div class="flex items-center justify-evenly max-w-lg mx-auto md:justify-center md:gap-12">
 
-                        <button @click="compartirArchivo"
-                            class="p-3 text-white hover:scale-110 active:scale-95 transition-all flex flex-col items-center drop-shadow-lg">
-                            <span class="material-symbols-outlined text-3xl">share</span>
-                        </button>
-
                         <button @click="descargarArchivo"
                             class="p-3 text-white hover:scale-110 active:scale-95 transition-all flex flex-col items-center drop-shadow-lg">
                             <span class="material-symbols-outlined text-3xl">download</span>
+                        </button>
+
+                        <button @click="cerrarModal"
+                            class="p-3 text-white hover:scale-110 active:scale-95 transition-all flex flex-col items-center drop-shadow-lg">
+                            <span class="material-symbols-outlined text-4xl">close</span>
                         </button>
 
                         <div class="relative z-30">
@@ -377,6 +377,7 @@ onUnmounted(() => {
                             class="p-3 text-white hover:scale-110 active:scale-95 transition-all flex flex-col items-center drop-shadow-lg md:hidden">
                             <span class="material-symbols-outlined text-3xl">arrow_forward</span>
                         </button>
+
                         <button v-if="esImagen(archivoActual?.name)" @click="cambiarFoto(1)"
                             class="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white hover:scale-110 active:scale-95 transition-all items-center drop-shadow-lg z-30 bg-black/20 hover:bg-black/40 rounded-full">
                             <span class="material-symbols-outlined text-4xl">chevron_right</span>
@@ -394,7 +395,6 @@ onUnmounted(() => {
 
     </div>
 </template>
-
 <style scoped>
 /* Animaciones Vue Transitions */
 .fade-enter-active,
