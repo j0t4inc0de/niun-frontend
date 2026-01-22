@@ -40,8 +40,8 @@ http.interceptors.response.use(
         return http(originalRequest)
       } catch (refreshError) {
         const authStore = useAuthStore()
-        authStore.logout()
-
+        authStore.logout(false)
+        router.push('/session-expired')
         return Promise.reject(refreshError)
       }
     }
