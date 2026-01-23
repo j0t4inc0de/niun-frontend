@@ -119,7 +119,7 @@ const handleLogout = () => {
                 <div class="px-4 mt-8 mb-2 text-[0.65rem] font-bold text-mako-600 uppercase tracking-widest">
                     Configuración</div>
 
-                <router-link to="/perfil" @click="isMobileMenuOpen = false"
+                <router-link :to="{ name: 'perfil' }" @click="isMobileMenuOpen = false"
                     active-class="bg-gradient-to-r from-primary/15 to-transparent border-l-4 border-primary text-white shadow-[0_0_20px_rgba(19,91,236,0.15)]"
                     class="flex items-center gap-4 px-4 py-3.5 rounded-r-2xl border-l-4 border-transparent text-mako-400 hover:text-white hover:bg-white/5 transition-all duration-200 group">
                     <span

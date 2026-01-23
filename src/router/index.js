@@ -41,11 +41,16 @@ const router = createRouter({
           name: 'boveda',
           component: () => import('../views/dashboard/BovedaView.vue'),
         },
+        {
+          path: 'perfil',
+          name: 'perfil',
+          component: () => import('../views/dashboard/PerfilView.vue'),
+        },
         // Ruta para testear componentes:  Sandbox
         {
           path: 'test',
           name: 'test-widget',
-          component: () => import('../components/ui/AnunciosWidget.vue'),
+          component: () => import('../views/dashboard/PerfilView.vue'),
         },
       ],
     },
