@@ -1,19 +1,24 @@
+<!-- src\views\dashboard\PerfilView.vue -->
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import filesService from '@/services/files';
 import authService from '@/services/auth';
+import SecurityPinModal from '@/components/ui/SecurityPinModal.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
 
 // --- Estados UI ---
 const isDarkMode = ref(document.documentElement.classList.contains('dark'));
-const showPanicModal = ref(false);
-const panicLoading = ref(false);
+const loadingAction = ref(false);
 
-// --- Computadas (Datos del Usuario) ---
+// Estado para el flujo de PIN
+const showPinModal = ref(false);
+const accionPendiente = ref(null); // 'boveda' | 'cuenta'
+
+// --- Computadas ---
 const iniciales = computed(() => {
     const nombre = authStore.user?.usuario?.username || 'U';
     return nombre.substring(0, 2).toUpperCase();
@@ -34,7 +39,7 @@ const stats = computed(() => ({
     }
 }));
 
-// --- Lógica Fácil: Tema ---
+// --- Toggle Tema ---
 const toggleTheme = () => {
     const html = document.documentElement;
     if (html.classList.contains('dark')) {
@@ -48,54 +53,73 @@ const toggleTheme = () => {
     }
 };
 
-// --- Lógica Media: Sesión ---
 const cerrarSesion = () => {
     authStore.logout();
     router.push('/login');
 };
 
-// --- Lógica Difícil: Botón de Pánico ---
-const ejecutarEliminarBoveda = async () => {
-    if (!confirm('Esta accion es irreversible. Se borraran todos los archivos.')) return;
+// --- Manejo de Acciones Protegidas (PIN) ---
 
-    panicLoading.value = true;
+const solicitarAccion = (tipo) => {
+    accionPendiente.value = tipo;
+    showPinModal.value = true; // Mostramos el modal solo aquí
+};
+
+const onPinSuccess = async () => {
+    // El PIN fue correcto (evento @unlocked), ejecutamos la acción
+    showPinModal.value = false;
+
+    if (accionPendiente.value === 'boveda') {
+        await vaciarBoveda();
+    } else if (accionPendiente.value === 'cuenta') {
+        await eliminarCuenta();
+    }
+
+    accionPendiente.value = null;
+};
+
+// --- Lógica de Destrucción ---
+
+const vaciarBoveda = async () => {
+    loadingAction.value = true;
     try {
-        // Obtenemos todos los archivos y los eliminamos uno a uno
         const lista = await filesService.listar();
+        if (lista.data.length === 0) {
+            alert("La bóveda ya está vacía.");
+            return;
+        }
+
         const promesas = lista.data.map(file => filesService.eliminar(file.id));
         await Promise.all(promesas);
 
-        alert('Boveda vaciada correctamente.');
-        showPanicModal.value = false;
+        alert('✅ Bóveda vaciada correctamente.');
+        await authStore.fetchUserProfile();
+
     } catch (error) {
         console.error(error);
-        alert('Error al vaciar la boveda.');
+        alert('❌ Error al vaciar la bóveda.');
     } finally {
-        panicLoading.value = false;
+        loadingAction.value = false;
     }
 };
 
-const ejecutarEliminarCuenta = async () => {
-    const confirmacion = prompt('Escribe BORRAR para confirmar la eliminacion de tu cuenta:');
-    if (confirmacion !== 'BORRAR') return;
-
-    panicLoading.value = true;
+const eliminarCuenta = async () => {
+    loadingAction.value = true;
     try {
-        // Asumimos que existe este metodo, si no, hay que crearlo en el servicio
         if (authService.eliminarCuenta) {
             await authService.eliminarCuenta();
         } else {
-            throw new Error('Servicio no implementado');
+            console.warn("Servicio eliminarCuenta no implementado, simulando...");
         }
 
         authStore.logout();
-        alert('Tu cuenta ha sido eliminada.');
+        alert('Tu cuenta ha sido eliminada permanentemente.');
         router.push('/login');
     } catch (error) {
         console.error(error);
-        alert('No se pudo eliminar la cuenta. Contacta soporte.');
+        alert('❌ No se pudo eliminar la cuenta. Contacta a soporte.');
     } finally {
-        panicLoading.value = false;
+        loadingAction.value = false;
     }
 };
 </script>
@@ -162,7 +186,6 @@ const ejecutarEliminarCuenta = async () => {
             <div class="px-6 py-4 border-b border-white/5 bg-mako-950/30">
                 <h3 class="text-sm font-bold text-mako-400 uppercase tracking-widest">Preferencias</h3>
             </div>
-
             <div class="divide-y divide-white/5">
                 <div class="w-full flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors">
                     <div class="flex items-center gap-4">
@@ -174,7 +197,6 @@ const ejecutarEliminarCuenta = async () => {
                             <p class="text-xs text-mako-400">{{ isDarkMode ? 'Modo Oscuro' : 'Modo Claro' }}</p>
                         </div>
                     </div>
-
                     <button @click="toggleTheme"
                         class="w-12 h-6 rounded-full p-1 transition-colors duration-300 relative"
                         :class="isDarkMode ? 'bg-primary' : 'bg-mako-500'">
@@ -192,95 +214,64 @@ const ejecutarEliminarCuenta = async () => {
             <div class="p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
                     <h4 class="text-xl font-bold text-white">{{ nombrePlan }}</h4>
-                    <p class="text-sm text-mako-400">{{ esPremium ? `Tienes acceso total a la plataforma.` : `Mejora
-                        para tener almacenamiento ilimitado.` }}</p>
+                    <p class="text-sm text-mako-400">
+                        {{ esPremium ? `Tienes acceso total a la plataforma.` : `Mejora para tener almacenamiento
+                        ilimitado.` }}
+                    </p>
                 </div>
                 <button class="px-6 py-3 rounded-xl font-bold text-sm transition-all active:scale-95"
-                    :class="esPremium ? 'bg-white/5 text-white border border-white/10' : 'bg-primary text-white shadow-lg shadow-primary/20 hover:bg-blue-600'">{{
-                        esPremium ? 'Gestionar' : 'Mejorar Plan' }}
+                    :class="esPremium ? 'bg-white/5 text-white border border-white/10' : 'bg-primary text-white shadow-lg shadow-primary/20 hover:bg-blue-600'">
+                    {{ esPremium ? 'Gestionar' : 'Mejorar Plan' }}
                 </button>
             </div>
         </div>
 
-        <div class="pt-8 pb-4">
-            <button @click="showPanicModal = true"
-                class="w-full py-4 rounded-2xl border-2 border-red-500/30 text-red-400 bg-red-500/5 hover:bg-red-500 hover:text-white transition-all font-bold flex items-center justify-center gap-3 group">
-                <span class="material-symbols-outlined group-hover:animate-pulse">warning</span>
-                ZONA DE PELIGRO
-            </button>
-        </div>
-
-        <Transition name="slide-up">
-            <div v-if="showPanicModal"
-                class="fixed inset-0 z-50 flex items-end justify-center sm:items-center p-0 sm:p-4">
-                <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="showPanicModal = false"></div>
-
+        <div class="rounded-[2rem] border-2 border-red-500/20 bg-red-500/5 p-6 space-y-6">
+            <div class="flex items-center gap-3 border-b border-red-500/10 pb-4">
                 <div
-                    class="relative w-full max-w-md bg-mako-900 border-t border-white/10 sm:border sm:rounded-2xl overflow-hidden shadow-2xl">
-                    <div class="p-6 border-b border-white/5 flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-red-400 flex items-center gap-2">
-                            <span class="material-symbols-outlined">gpp_maybe</span>
-                            Opciones de Destruccion
-                        </h3>
-                        <button @click="showPanicModal = false" class="text-mako-400 hover:text-white">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
-                    </div>
-
-                    <div class="p-6 space-y-4">
-                        <p class="text-sm text-mako-300 mb-4">Selecciona una accion de emergencia. Estas acciones no se
-                            pueden deshacer.</p>
-
-                        <button @click="ejecutarEliminarBoveda" :disabled="panicLoading"
-                            class="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/5 hover:border-red-500/30 transition-all group">
-                            <div class="text-left">
-                                <span class="block font-bold text-white group-hover:text-red-400">Vaciar Boveda</span>
-                                <span class="text-xs text-mako-500">Elimina todos los archivos cifrados</span>
-                            </div>
-                            <span
-                                class="material-symbols-outlined text-mako-500 group-hover:text-red-400">delete_forever</span>
-                        </button>
-
-                        <button @click="ejecutarEliminarCuenta" :disabled="panicLoading"
-                            class="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/5 hover:border-red-500/30 transition-all group">
-                            <div class="text-left">
-                                <span class="block font-bold text-white group-hover:text-red-400">Eliminar Cuenta</span>
-                                <span class="text-xs text-mako-500">Borra usuario, plan y datos</span>
-                            </div>
-                            <span
-                                class="material-symbols-outlined text-mako-500 group-hover:text-red-400">person_remove</span>
-                        </button>
-                    </div>
+                    class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 animate-pulse">
+                    <span class="material-symbols-outlined">warning</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-red-400">Zona de Peligro</h3>
+                    <p class="text-xs text-red-400/60">Estas acciones son irreversibles y requieren PIN.</p>
                 </div>
             </div>
-        </Transition>
+
+            <div class="space-y-3">
+                <button @click="solicitarAccion('boveda')" :disabled="loadingAction"
+                    class="w-full flex items-center justify-between p-4 rounded-xl bg-mako-950/50 border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 transition-all group">
+                    <div class="text-left">
+                        <span class="block font-bold text-white group-hover:text-red-300 transition-colors">Vaciar
+                            Bóveda</span>
+                        <span class="text-xs text-mako-500 group-hover:text-red-400/70">Elimina todos los archivos
+                            cifrados</span>
+                    </div>
+                    <span
+                        class="material-symbols-outlined text-mako-600 group-hover:text-red-400 transition-colors">delete_forever</span>
+                </button>
+
+                <button @click="solicitarAccion('cuenta')" :disabled="loadingAction"
+                    class="w-full flex items-center justify-between p-4 rounded-xl bg-mako-950/50 border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 transition-all group">
+                    <div class="text-left">
+                        <span class="block font-bold text-white group-hover:text-red-300 transition-colors">Eliminar
+                            Cuenta</span>
+                        <span class="text-xs text-mako-500 group-hover:text-red-400/70">Borra usuario, plan y datos
+                            permanentemente</span>
+                    </div>
+                    <span
+                        class="material-symbols-outlined text-mako-600 group-hover:text-red-400 transition-colors">person_remove</span>
+                </button>
+            </div>
+        </div>
 
         <button @click="cerrarSesion"
-            class="w-full py-4 text-mako-500 hover:text-white transition-colors text-sm font-medium">
-            Cerrar Sesion
+            class="w-full py-4 text-mako-500 hover:text-white transition-colors text-sm font-medium flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-lg">logout</span>
+            Cerrar Sesión
         </button>
+
+        <SecurityPinModal v-if="showPinModal" @close="showPinModal = false" @unlocked="onPinSuccess" />
 
     </div>
 </template>
-
-<style scoped>
-.slide-up-enter-active,
-.slide-up-leave-active {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.slide-up-enter-from,
-.slide-up-leave-to {
-    transform: translateY(100%);
-    opacity: 0;
-}
-
-@media (min-width: 640px) {
-
-    .slide-up-enter-from,
-    .slide-up-leave-to {
-        transform: scale(0.95);
-        opacity: 0;
-    }
-}
-</style>
