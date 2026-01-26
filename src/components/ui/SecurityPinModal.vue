@@ -19,22 +19,19 @@ const verifyPin = async () => {
     attemptsWarning.value = '';
 
     try {
-        // Endpoint que definiste: POST /api/security/
-        await api.post('/api/security/', { pin_boveda: pin.value });
+        await api.post('/security/', { pin_boveda: pin.value });
 
-        // Si pasa, emitimos evento de desbloqueo
         emit('unlocked');
     } catch (err) {
         const data = err.response?.data || {};
         const detail = data.error || 'Error de PIN';
 
-        // Lógica de muerte súbita para el PIN
         if (detail.includes('eliminada')) {
             alert("Tu cuenta ha sido eliminada permanentemente por seguridad debido a múltiples intentos fallidos.");
             authStore.logout();
         } else if (detail.includes('quedan')) {
             attemptsWarning.value = `⚠️ ${detail}`;
-            pin.value = ''; // Limpiar input para reintentar
+            pin.value = '';
         } else {
             errorMsg.value = detail;
         }

@@ -62,11 +62,10 @@ const cerrarSesion = () => {
 
 const solicitarAccion = (tipo) => {
     accionPendiente.value = tipo;
-    showPinModal.value = true; // Mostramos el modal solo aquí
+    showPinModal.value = true;
 };
 
 const onPinSuccess = async () => {
-    // El PIN fue correcto (evento @unlocked), ejecutamos la acción
     showPinModal.value = false;
 
     if (accionPendiente.value === 'boveda') {
@@ -125,7 +124,7 @@ const eliminarCuenta = async () => {
 </script>
 
 <template>
-    <div class="max-w-3xl mx-auto space-y-6 pb-24 md:pb-0">
+    <div class="max-w-3xl mx-auto space-y-4 pb-24 md:pb-0">
 
         <div
             class="relative overflow-hidden rounded-[2rem] bg-mako-900 border border-white/5 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-2xl">
@@ -151,7 +150,7 @@ const eliminarCuenta = async () => {
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <div class="p-5 rounded-3xl bg-white/[0.03] border border-white/5 space-y-3">
+            <div class="p-5 rounded-[2rem] bg-white/[0.03] border border-white/5 space-y-3">
                 <div class="flex items-center gap-3 text-mako-300 mb-1">
                     <span class="material-symbols-outlined text-xl">vpn_key</span>
                     <span class="text-xs font-bold uppercase tracking-wider">Cuentas</span>
@@ -166,7 +165,7 @@ const eliminarCuenta = async () => {
                 </div>
             </div>
 
-            <div class="p-5 rounded-3xl bg-white/[0.03] border border-white/5 space-y-3">
+            <div class="p-5 rounded-[2rem] bg-white/[0.03] border border-white/5 space-y-3">
                 <div class="flex items-center gap-3 text-mako-300 mb-1">
                     <span class="material-symbols-outlined text-xl">cloud</span>
                     <span class="text-xs font-bold uppercase tracking-wider">Espacio</span>
@@ -184,89 +183,86 @@ const eliminarCuenta = async () => {
 
         <div class="bg-mako-900/50 backdrop-blur-sm border border-white/5 rounded-[2rem] overflow-hidden">
             <div class="px-6 py-4 border-b border-white/5 bg-mako-950/30">
-                <h3 class="text-sm font-bold text-mako-400 uppercase tracking-widest">Preferencias</h3>
+                <h3 class="text-xs font-bold text-mako-400 uppercase tracking-widest">Configuración</h3>
             </div>
-            <div class="divide-y divide-white/5">
-                <div class="w-full flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-mako-800 flex items-center justify-center text-white">
-                            <span class="material-symbols-outlined">{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</span>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-white font-medium">Apariencia</p>
-                            <p class="text-xs text-mako-400">{{ isDarkMode ? 'Modo Oscuro' : 'Modo Claro' }}</p>
-                        </div>
-                    </div>
-                    <button @click="toggleTheme"
-                        class="w-12 h-6 rounded-full p-1 transition-colors duration-300 relative"
-                        :class="isDarkMode ? 'bg-primary' : 'bg-mako-500'">
-                        <div class="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 absolute top-1"
-                            :class="isDarkMode ? 'translate-x-6' : 'translate-x-0'"></div>
-                    </button>
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-mako-900/50 backdrop-blur-sm border border-white/5 rounded-[2rem] overflow-hidden">
-            <div class="px-6 py-4 border-b border-white/5 bg-mako-950/30">
-                <h3 class="text-sm font-bold text-mako-400 uppercase tracking-widest">Plan Actual</h3>
-            </div>
-            <div class="p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div>
-                    <h4 class="text-xl font-bold text-white">{{ nombrePlan }}</h4>
-                    <p class="text-sm text-mako-400">
-                        {{ esPremium ? `Tienes acceso total a la plataforma.` : `Mejora para tener almacenamiento
-                        ilimitado.` }}
-                    </p>
+            <div
+                class="w-full flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-mako-800 flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined">{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</span>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-white font-medium text-sm">Apariencia</p>
+                        <p class="text-[0.65rem] text-mako-400 uppercase tracking-wide">{{ isDarkMode ? 'Oscuro' :
+                            'Claro' }}</p>
+                    </div>
                 </div>
-                <button class="px-6 py-3 rounded-xl font-bold text-sm transition-all active:scale-95"
-                    :class="esPremium ? 'bg-white/5 text-white border border-white/10' : 'bg-primary text-white shadow-lg shadow-primary/20 hover:bg-blue-600'">
-                    {{ esPremium ? 'Gestionar' : 'Mejorar Plan' }}
+                <button @click="toggleTheme" class="w-12 h-6 rounded-full p-1 transition-colors duration-300 relative"
+                    :class="isDarkMode ? 'bg-primary' : 'bg-mako-500'">
+                    <div class="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 absolute top-1"
+                        :class="isDarkMode ? 'translate-x-6' : 'translate-x-0'"></div>
+                </button>
+            </div>
+
+            <div class="w-full flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-mako-800 flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined">workspace_premium</span>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-white font-medium text-sm">Plan {{ nombrePlan }}</p>
+                        <p class="text-[0.65rem] text-mako-400 uppercase tracking-wide">
+                            {{ esPremium ? 'Activo' : 'Básico' }}
+                        </p>
+                    </div>
+                </div>
+                <button class="text-xs font-bold px-4 py-2 rounded-lg transition-colors border"
+                    :class="esPremium ? 'border-white/10 hover:bg-white/5 text-white' : 'border-primary text-primary hover:bg-primary hover:text-white'">
+                    {{ esPremium ? 'Gestionar' : 'Mejorar' }}
                 </button>
             </div>
         </div>
 
-        <div class="rounded-[2rem] border-2 border-red-500/20 bg-red-500/5 p-6 space-y-6">
-            <div class="flex items-center gap-3 border-b border-red-500/10 pb-4">
-                <div
-                    class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 animate-pulse">
-                    <span class="material-symbols-outlined">warning</span>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-red-400">Zona de Peligro</h3>
-                    <p class="text-xs text-red-400/60">Estas acciones son irreversibles y requieren PIN.</p>
-                </div>
-            </div>
+        <div class="grid grid-cols-2 gap-4 pt-2">
 
-            <div class="space-y-3">
-                <button @click="solicitarAccion('boveda')" :disabled="loadingAction"
-                    class="w-full flex items-center justify-between p-4 rounded-xl bg-mako-950/50 border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 transition-all group">
-                    <div class="text-left">
-                        <span class="block font-bold text-white group-hover:text-red-300 transition-colors">Vaciar
+            <button @click="solicitarAccion('boveda')" :disabled="loadingAction"
+                class="group relative overflow-hidden rounded-[2rem] bg-mako-900/40 border border-white/5 p-6 hover:border-red-500/30 hover:bg-red-500/5 transition-all duration-300 active:scale-95 text-left">
+
+                <div class="relative z-10 flex flex-col justify-between h-full gap-4">
+                    <div
+                        class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined">delete_forever</span>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-white group-hover:text-red-200 transition-colors">Vaciar
                             Bóveda</span>
-                        <span class="text-xs text-mako-500 group-hover:text-red-400/70">Elimina todos los archivos
-                            cifrados</span>
+                        <span
+                            class="text-[0.65rem] text-mako-500 font-medium uppercase tracking-wider group-hover:text-red-400/60">Irreversible</span>
                     </div>
-                    <span
-                        class="material-symbols-outlined text-mako-600 group-hover:text-red-400 transition-colors">delete_forever</span>
-                </button>
+                </div>
+            </button>
 
-                <button @click="solicitarAccion('cuenta')" :disabled="loadingAction"
-                    class="w-full flex items-center justify-between p-4 rounded-xl bg-mako-950/50 border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 transition-all group">
-                    <div class="text-left">
-                        <span class="block font-bold text-white group-hover:text-red-300 transition-colors">Eliminar
-                            Cuenta</span>
-                        <span class="text-xs text-mako-500 group-hover:text-red-400/70">Borra usuario, plan y datos
-                            permanentemente</span>
+            <button @click="solicitarAccion('cuenta')" :disabled="loadingAction"
+                class="group relative overflow-hidden rounded-[2rem] bg-mako-900/40 border border-white/5 p-6 hover:border-red-500/30 hover:bg-red-500/5 transition-all duration-300 active:scale-95 text-left">
+
+                <div class="relative z-10 flex flex-col justify-between h-full gap-4">
+                    <div
+                        class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform duration-300">
+                        <span class="material-symbols-outlined">person_remove</span>
                     </div>
-                    <span
-                        class="material-symbols-outlined text-mako-600 group-hover:text-red-400 transition-colors">person_remove</span>
-                </button>
-            </div>
+                    <div>
+                        <span class="block font-bold text-white group-hover:text-red-200 transition-colors">Eliminar
+                            Cuenta</span>
+                        <span
+                            class="text-[0.65rem] text-mako-500 font-medium uppercase tracking-wider group-hover:text-red-400/60">Peligro</span>
+                    </div>
+                </div>
+            </button>
         </div>
 
         <button @click="cerrarSesion"
-            class="w-full py-4 text-mako-500 hover:text-white transition-colors text-sm font-medium flex items-center justify-center gap-2">
+            class="w-full py-4 text-mako-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 opacity-60 hover:opacity-100">
             <span class="material-symbols-outlined text-lg">logout</span>
             Cerrar Sesión
         </button>
