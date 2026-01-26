@@ -267,7 +267,9 @@ const eliminarCuenta = async () => {
             Cerrar Sesión
         </button>
 
-        <SecurityPinModal v-if="showPinModal" @close="showPinModal = false" @unlocked="onPinSuccess" />
+        <Teleport to="body">
+            <SecurityPinModal v-if="showPinModal" @close="showPinModal = false" @unlocked="onPinSuccess" />
+        </Teleport>
 
     </div>
 </template>
