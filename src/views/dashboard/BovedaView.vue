@@ -1,3 +1,4 @@
+<!-- src/views/dashboard/BovedaView.vue -->
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import filesService from '@/services/files';

@@ -1,3 +1,4 @@
+<!-- src/components/CuentasLista.vue -->
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import cuentasService from '@/services/cuentas';
