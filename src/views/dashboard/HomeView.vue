@@ -42,7 +42,7 @@ onMounted(() => {
 
             <!-- Tarejta de Plan -->
             <div
-                class="col-span-2 md:col-span-1 group relative overflow-hidden rounded-[2rem] border border-black/20 dark:border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/50 hover:shadow-primary/50 dark:hover:border-white/10 dark:hover:shadow-primary/10">
+                class="col-span-2 md:col-span-1 group relative overflow-hidden rounded-[2rem] border  bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/50 hover:shadow-primary/50 dark:hover:border-white/10 dark:hover:shadow-primary/10">
                 <div
                     class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent">
                 </div>
@@ -118,7 +118,7 @@ onMounted(() => {
                             <div class="flex items-center gap-1.5 text-gray-900 dark:text-mako-300">
                                 <span>Max: <span class="text-gray-900 dark:text-white font-bold">{{
                                     auth.user?.limites?.cuentas?.total ||
-                                    10 }}</span></span>
+                                        10 }}</span></span>
                             </div>
                         </div>
                     </div>

@@ -127,98 +127,112 @@ const eliminarCuenta = async () => {
     <div class="max-w-3xl mx-auto space-y-4 pb-24 md:pb-0">
 
         <div
-            class="relative overflow-hidden rounded-[2rem] bg-mako-900 border border-white/5 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-2xl">
+            class="relative overflow-hidden rounded-[2rem] bg-white border dark:bg-mako-900 border-black/20 dark:border-white/10 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-1xl transition-colors duration-300">
+
             <div
-                class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/3">
+                class="absolute top-0 right-0 w-64 h-64 bg-primary/10 dark:bg-primary/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/3">
             </div>
 
             <div class="relative z-10 shrink-0">
                 <div
-                    class="w-24 h-24 rounded-full bg-gradient-to-br from-mako-700 to-mako-800 border-4 border-mako-950 shadow-xl flex items-center justify-center">
-                    <span class="text-3xl font-bold text-white tracking-widest">{{ iniciales }}</span>
+                    class="w-24 h-24 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-mako-700 dark:to-mako-800 border-4 border-white dark:border-mako-950 shadow-xl flex items-center justify-center transition-colors">
+                    <span class="text-3xl font-bold text-gray-700 dark:text-white tracking-widest">{{ iniciales
+                        }}</span>
                 </div>
                 <div
-                    class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-blue-500 text-white text-[0.65rem] font-bold px-3 py-1 rounded-full shadow-lg border border-white/10 whitespace-nowrap uppercase">
+                    class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-blue-500 text-white text-[0.65rem] font-bold px-3 py-1 rounded-full shadow-lg border border-white dark:border-white/10 whitespace-nowrap uppercase">
                     {{ nombrePlan }}
                 </div>
             </div>
 
             <div class="relative z-10 text-center md:text-left space-y-1">
-                <h2 class="text-2xl font-bold text-white">{{ authStore.user?.usuario?.username || 'Usuario' }}</h2>
-                <p class="text-mako-400 text-sm">{{ authStore.user?.usuario?.email }}</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ authStore.user?.usuario?.username ||
+                    'Usuario' }}</h2>
+                <p class="text-gray-500 dark:text-mako-400 text-sm">{{ authStore.user?.usuario?.email }}</p>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <div class="p-5 rounded-[2rem] bg-white/[0.03] border border-white/5 space-y-3">
-                <div class="flex items-center gap-3 text-mako-300 mb-1">
+            <div
+                class="p-5 rounded-[2rem] bg-gray-50 border border-black/20 dark:border-white/10 dark:bg-white/[0.03] space-y-3 transition-colors">
+                <div class="flex items-center gap-3 text-gray-500 dark:text-mako-300 mb-1">
                     <span class="material-symbols-outlined text-xl">vpn_key</span>
                     <span class="text-xs font-bold uppercase tracking-wider">Cuentas</span>
                 </div>
-                <div class="text-2xl font-bold text-white">
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">
                     {{ stats.cuentas.usadas }}
-                    <span class="text-sm text-mako-500 font-normal">/ {{ stats.cuentas.total }}</span>
+                    <span class="text-sm text-gray-400 dark:text-mako-500 font-normal">/ {{ stats.cuentas.total
+                        }}</span>
                 </div>
-                <div class="h-1.5 w-full bg-black/20 rounded-full overflow-hidden">
+                <div class="h-1.5 w-full bg-gray-200 dark:bg-black/20 rounded-full overflow-hidden">
                     <div class="h-full bg-blue-500 rounded-full" :style="{ width: stats.cuentas.porcentaje + '%' }">
                     </div>
                 </div>
             </div>
 
-            <div class="p-5 rounded-[2rem] bg-white/[0.03] border border-white/5 space-y-3">
-                <div class="flex items-center gap-3 text-mako-300 mb-1">
+            <div
+                class="p-5 rounded-[2rem] bg-gray-50 border border-black/20 dark:border-white/10 dark:bg-white/[0.03] space-y-3 transition-colors">
+                <div class="flex items-center gap-3 text-gray-500 dark:text-mako-300 mb-1">
                     <span class="material-symbols-outlined text-xl">cloud</span>
                     <span class="text-xs font-bold uppercase tracking-wider">Espacio</span>
                 </div>
-                <div class="text-2xl font-bold text-white">
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">
                     {{ stats.espacio.usado }}
-                    <span class="text-sm text-mako-500 font-normal">MB</span>
+                    <span class="text-sm text-gray-400 dark:text-mako-500 font-normal">MB</span>
                 </div>
-                <div class="h-1.5 w-full bg-black/20 rounded-full overflow-hidden">
+                <div class="h-1.5 w-full bg-gray-200 dark:bg-black/20 rounded-full overflow-hidden">
                     <div class="h-full bg-primary rounded-full" :style="{ width: stats.espacio.porcentaje + '%' }">
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-mako-900/50 backdrop-blur-sm border border-white/5 rounded-[2rem] overflow-hidden">
-            <div class="px-6 py-4 border-b border-white/5 bg-mako-950/30">
-                <h3 class="text-xs font-bold text-mako-400 uppercase tracking-widest">Configuración</h3>
+        <div
+            class="bg-white/50 dark:bg-mako-900/50 backdrop-blur-sm border border-black/20 dark:border-white/10 rounded-[2rem] overflow-hidden transition-colors">
+
+            <div class="px-6 py-4 border-b border-black/20 dark:border-white/10 bg-gray-50/50 dark:bg-mako-950/30">
+                <h3 class="text-xs font-bold text-gray-400 dark:text-mako-400 uppercase tracking-widest">Configuración
+                </h3>
             </div>
 
             <div
-                class="w-full flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors border-b border-white/5">
+                class="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b border-gray-200 dark:border-white/5">
                 <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-mako-800 flex items-center justify-center text-white">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gray-100 text-gray-600 dark:bg-mako-800 dark:text-white flex items-center justify-center transition-colors">
                         <span class="material-symbols-outlined">{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</span>
                     </div>
                     <div class="text-left">
-                        <p class="text-white font-medium text-sm">Apariencia</p>
-                        <p class="text-[0.65rem] text-mako-400 uppercase tracking-wide">{{ isDarkMode ? 'Oscuro' :
+                        <p class="text-gray-900 dark:text-white font-medium text-sm">Apariencia</p>
+                        <p class="text-[0.65rem] text-gray-500 dark:text-mako-400 uppercase tracking-wide">{{ isDarkMode
+                            ? 'Oscuro' :
                             'Claro' }}</p>
                     </div>
                 </div>
                 <button @click="toggleTheme" class="w-12 h-6 rounded-full p-1 transition-colors duration-300 relative"
-                    :class="isDarkMode ? 'bg-primary' : 'bg-mako-500'">
+                    :class="isDarkMode ? 'bg-primary' : 'bg-gray-300'">
                     <div class="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 absolute top-1"
                         :class="isDarkMode ? 'translate-x-6' : 'translate-x-0'"></div>
                 </button>
             </div>
 
-            <div class="w-full flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors">
+            <div
+                class="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                 <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-mako-800 flex items-center justify-center text-white">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gray-100 text-gray-600 dark:bg-mako-800 dark:text-white flex items-center justify-center transition-colors">
                         <span class="material-symbols-outlined">workspace_premium</span>
                     </div>
                     <div class="text-left">
-                        <p class="text-white font-medium text-sm">Plan {{ nombrePlan }}</p>
-                        <p class="text-[0.65rem] text-mako-400 uppercase tracking-wide">
+                        <p class="text-gray-900 dark:text-white font-medium text-sm">Plan {{ nombrePlan }}</p>
+                        <p class="text-[0.65rem] text-gray-500 dark:text-mako-400 uppercase tracking-wide">
                             {{ esPremium ? 'Activo' : 'Básico' }}
                         </p>
                     </div>
                 </div>
-                <button class="text-xs font-bold px-4 py-2 rounded-lg transition-colors border"
-                    :class="esPremium ? 'border-white/10 hover:bg-white/5 text-white' : 'border-primary text-primary hover:bg-primary hover:text-white'">
+                <button class="text-xs font-bold px-4 py-2 rounded-lg transition-colors border" :class="esPremium
+                    ? 'border-gray-200 hover:bg-gray-100 text-gray-700 dark:border-white/10 dark:hover:bg-white/5 dark:text-white'
+                    : 'border-primary text-primary hover:bg-primary hover:text-white'">
                     {{ esPremium ? 'Gestionar' : 'Mejorar' }}
                 </button>
             </div>
@@ -227,42 +241,44 @@ const eliminarCuenta = async () => {
         <div class="grid grid-cols-2 gap-4 pt-2">
 
             <button @click="solicitarAccion('boveda')" :disabled="loadingAction"
-                class="group relative overflow-hidden rounded-[2rem] bg-mako-900/40 border border-white/5 p-6 hover:border-red-500/30 hover:bg-red-500/5 transition-all duration-300 active:scale-95 text-left">
+                class="group relative overflow-hidden rounded-[2rem] bg-white border border-black/20 dark:border-white/10 dark:bg-mako-900/40 p-6 hover:border-red-200 hover:bg-red-50 dark:hover:border-red-500/30 dark:hover:bg-red-500/5 transition-all duration-300 active:scale-95 text-left">
 
                 <div class="relative z-10 flex flex-col justify-between h-full gap-4">
                     <div
-                        class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform duration-300">
+                        class="w-10 h-10 rounded-full bg-red-100 text-red-500 dark:bg-red-500/10 dark:text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <span class="material-symbols-outlined">delete_forever</span>
                     </div>
                     <div>
-                        <span class="block font-bold text-white group-hover:text-red-200 transition-colors">Vaciar
+                        <span
+                            class="block font-bold text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-200 transition-colors">Vaciar
                             Bóveda</span>
                         <span
-                            class="text-[0.65rem] text-mako-500 font-medium uppercase tracking-wider group-hover:text-red-400/60">Irreversible</span>
+                            class="text-[0.65rem] text-gray-500 dark:text-mako-500 font-medium uppercase tracking-wider group-hover:text-red-400/60">Irreversible</span>
                     </div>
                 </div>
             </button>
 
             <button @click="solicitarAccion('cuenta')" :disabled="loadingAction"
-                class="group relative overflow-hidden rounded-[2rem] bg-mako-900/40 border border-white/5 p-6 hover:border-red-500/30 hover:bg-red-500/5 transition-all duration-300 active:scale-95 text-left">
+                class="group relative overflow-hidden rounded-[2rem] bg-white border border-black/20 dark:border-white/10 dark:bg-mako-900/40 p-6 hover:border-red-200 hover:bg-red-50 dark:hover:border-red-500/30 dark:hover:bg-red-500/5 transition-all duration-300 active:scale-95 text-left">
 
                 <div class="relative z-10 flex flex-col justify-between h-full gap-4">
                     <div
-                        class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform duration-300">
+                        class="w-10 h-10 rounded-full bg-red-100 text-red-500 dark:bg-red-500/10 dark:text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <span class="material-symbols-outlined">person_remove</span>
                     </div>
                     <div>
-                        <span class="block font-bold text-white group-hover:text-red-200 transition-colors">Eliminar
+                        <span
+                            class="block font-bold text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-200 transition-colors">Eliminar
                             Cuenta</span>
                         <span
-                            class="text-[0.65rem] text-mako-500 font-medium uppercase tracking-wider group-hover:text-red-400/60">Peligro</span>
+                            class="text-[0.65rem] text-gray-500 dark:text-mako-500 font-medium uppercase tracking-wider group-hover:text-red-400/60">Peligro</span>
                     </div>
                 </div>
             </button>
         </div>
 
         <button @click="cerrarSesion"
-            class="w-full py-4 text-mako-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 opacity-60 hover:opacity-100">
+            class="w-full py-4 text-gray-800 hover:text-red dark:text-mako-500 transition-colors text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 opacity-60 hover:opacity-100">
             <span class="material-symbols-outlined text-lg">logout</span>
             Cerrar Sesión
         </button>
