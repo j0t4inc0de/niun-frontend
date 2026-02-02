@@ -1,3 +1,4 @@
+<!-- src/views/dashboard/HomeView.vue -->
 <script setup>
 import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
@@ -102,9 +103,9 @@ onMounted(() => {
                     <div class="mt-4 md:mt-8 space-y-2 md:space-y-3">
                         <div
                             class="relative w-full h-3 md:h-4 bg-white/10 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
-                            <div class="absolute top-0 left-0 h-full rounded-full 
-                bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400 
-                shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)] 
+                            <div class="absolute top-0 left-0 h-full rounded-full
+                bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400
+                shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)]
                 transition-all duration-1000 ease-out"
                                 :style="{ width: ((auth.user?.limites?.cuentas?.usadas / auth.user?.limites?.cuentas?.total) * 100) + '%' }">
 
@@ -117,7 +118,7 @@ onMounted(() => {
                             <div class="flex items-center gap-1.5 text-gray-900 dark:text-mako-300">
                                 <span>Max: <span class="text-gray-900 dark:text-white font-bold">{{
                                     auth.user?.limites?.cuentas?.total ||
-                                        10 }}</span></span>
+                                    10 }}</span></span>
                             </div>
                         </div>
                     </div>
@@ -150,9 +151,9 @@ onMounted(() => {
                     <div class="mt-4 md:mt-8 space-y-2 md:space-y-3">
                         <div
                             class="relative w-full h-3 md:h-4 bg-white/10 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
-                            <div class="absolute top-0 left-0 h-full rounded-full 
-                bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400 
-                shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)] 
+                            <div class="absolute top-0 left-0 h-full rounded-full
+                bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400
+                shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)]
                 transition-all duration-1000 ease-out"
                                 :style="{ width: ((auth.user?.limites?.cuentas?.usadas / auth.user?.limites?.cuentas?.total) * 100) + '%' }">
 
