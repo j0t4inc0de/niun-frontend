@@ -255,10 +255,11 @@ onUnmounted(() => {
 <template>
     <div class="w-full space-y-6 pb-24 md:pb-0">
 
-        <div class="flex items-center justify-between sticky top-0 z-10 bg-mako-950/80 backdrop-blur-md py-2">
+        <div
+            class="flex items-center justify-between sticky top-0 z-10 dark:bg-mako-950/80 backdrop-blur-md py-2 transition-colors">
             <div>
-                <h3 class="text-2xl font-bold text-white tracking-tight">Bóveda</h3>
-                <p class="text-xs text-mako-400">Archivos cifrados</p>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Bóveda</h3>
+                <p class="text-xs text-gray-500 dark:text-mako-400">Archivos cifrados</p>
             </div>
 
             <input type="file" ref="inputArchivo" @change="manejarSubida" class="hidden" />
@@ -273,26 +274,32 @@ onUnmounted(() => {
         </div>
 
         <div v-if="cargando" class="grid grid-cols-3 md:grid-cols-5 gap-1 md:gap-4">
-            <div v-for="i in 5" :key="i" class="aspect-square bg-white/5 animate-pulse rounded-lg"></div>
+            <div v-for="i in 5" :key="i" class="aspect-square bg-gray-200 dark:bg-white/5 animate-pulse rounded-lg">
+            </div>
         </div>
 
         <div v-else-if="archivos.length === 0"
-            class="py-20 text-center border border-white/5 rounded-3xl bg-white/[0.02]">
-            <span class="material-symbols-outlined text-mako-600 text-5xl mb-3">no_photography</span>
-            <p class="text-mako-400">Sin archivos aún</p>
+            class="py-20 text-center border border-gray-200 dark:border-white/5 rounded-3xl bg-gray-50 dark:bg-white/[0.02]">
+            <span class="material-symbols-outlined text-gray-300 dark:text-mako-600 text-5xl mb-3">no_photography</span>
+            <p class="text-gray-500 dark:text-mako-400">Sin archivos aún</p>
         </div>
 
         <div v-else class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1 md:gap-4">
-            <div v-for="file in archivos" :key="file.id"
-                class="group relative aspect-square bg-black/40 hover:bg-white/5 transition-all overflow-hidden cursor-pointer md:rounded-xl border border-white/5 md:border-white/10"
-                @click="abrirVisualizador(file)">
+            <div v-for="file in archivos" :key="file.id" class="group relative aspect-square transition-all overflow-hidden cursor-pointer md:rounded-xl border
+                       bg-white border-gray-200 hover:bg-gray-50 hover:shadow-md
+                       dark:bg-black/40 dark:border-white/5 dark:hover:bg-white/5" @click="abrirVisualizador(file)">
+
                 <div class="absolute inset-0 flex flex-col items-center justify-center p-2">
                     <span
-                        class="material-symbols-outlined text-3xl md:text-4xl mb-1 opacity-70 group-hover:scale-110 transition-transform"
-                        :class="esImagen(file.name) ? 'text-purple-400' : 'text-blue-400'">
+                        class="material-symbols-outlined text-3xl md:text-4xl mb-1 opacity-90 dark:opacity-70 group-hover:scale-110 transition-transform"
+                        :class="esImagen(file.name)
+                            ? 'text-purple-600 dark:text-purple-400'
+                            : 'text-blue-600 dark:text-blue-400'">
                         {{ esImagen(file.name) ? 'image' : 'description' }}
                     </span>
-                    <p class="text-[0.6rem] md:text-sm font-medium text-mako-300 truncate w-full text-center px-1">
+
+                    <p
+                        class="text-[0.6rem] md:text-sm font-medium text-gray-600 dark:text-mako-300 truncate w-full text-center px-1">
                         {{ file.name }}
                     </p>
                 </div>
@@ -396,6 +403,7 @@ onUnmounted(() => {
 
     </div>
 </template>
+
 <style scoped>
 /* Animaciones Vue Transitions */
 .fade-enter-active,
