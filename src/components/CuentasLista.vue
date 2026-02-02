@@ -229,8 +229,9 @@ const guardarCuenta = async () => {
 
         <div v-else class="grid grid-cols-1 gap-4">
             <div v-for="cuenta in cuentasFiltradas" :key="cuenta.id"
-                class="group relative overflow-hidden rounded-2xl border transition-all duration-300 border-gray-200 hover:shadow-md hover:border-primary/30
-                       dark:border-white/10 dark:bg-gradient-to-r dark:from-mako-900/60 dark:to-black/40 dark:backdrop-blur-xl dark:hover:border-white/20 dark:hover:bg-white/[0.03]">
+                class="group relative overflow-hidden rounded-2xl border transition-all duration-300
+                       bg-white border-gray-200 hover:shadow-md hover:border-primary/30
+                       dark:bg-transparent dark:border-white/10 dark:bg-gradient-to-r dark:from-mako-900/60 dark:to-black/40 dark:backdrop-blur-xl dark:hover:border-white/20 dark:hover:bg-white/[0.03]">
 
                 <div class="relative z-10 p-4 flex items-center gap-4">
                     <div class="shrink-0" @click="abrirModalEditar(cuenta)">
@@ -248,7 +249,7 @@ const guardarCuenta = async () => {
                     <div class="flex-1 min-w-0 cursor-pointer" @click="abrirModalEditar(cuenta)">
                         <div class="flex items-center gap-2 mb-0.5">
                             <h4 class="text-base font-bold text-gray-900 dark:text-white truncate">{{ cuenta.site_name
-                                }}</h4>
+                            }}</h4>
                             <span v-if="cuenta.decrypted_secret"
                                 class="material-symbols-outlined text-[10px] text-yellow-600 dark:text-yellow-500"
                                 title="Tiene llave/secreto">key</span>

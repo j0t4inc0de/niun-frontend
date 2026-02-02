@@ -30,9 +30,7 @@ onMounted(() => {
 
                 <p class="text-gray-500 dark:text-mako-300 mt-1 md:mt-2 text-sm md:text-lg font-light tracking-wide">
                     Panel de Control
-
                     <span class="mx-2 text-gray-300 dark:text-mako-600">|</span>
-
                     Resumen
                 </p>
             </div>
@@ -40,26 +38,28 @@ onMounted(() => {
 
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
 
-            <!-- Tarejta de Plan -->
             <div
-                class="col-span-1 group relative overflow-hidden rounded-[2rem] border dark:border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/50 hover:shadow-primary/50 dark:hover:border-white/10 dark:hover:shadow-primary/10">
+                class="col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
+                       bg-white border border-gray-200 hover:border-primary/30 hover:shadow-primary/20
+                       dark:bg-transparent dark:border-white/10 dark:bg-gradient-to-br dark:from-white/5 dark:via-white/[0.02] dark:to-transparent dark:backdrop-blur-2xl dark:hover:border-white/50 dark:hover:shadow-primary/10">
+
                 <div
-                    class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent">
+                    class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-white/20 to-transparent">
                 </div>
 
                 <div
                     class="p-6 md:p-8 h-full flex flex-row md:flex-col justify-between items-center md:items-start relative z-10 gap-4">
                     <div>
                         <p
-                            class="text-[0.65rem] md:text-xs font-bold text-mako-400 uppercase tracking-[0.2em] mb-1 md:mb-2">
+                            class="text-[0.65rem] md:text-xs font-bold text-gray-500 dark:text-mako-400 uppercase tracking-[0.2em] mb-1 md:mb-2">
                             Tu Plan</p>
                         <h3 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{{
-                            auth.user?.plan?.nombre
-                            || '...' }}</h3>
+                            auth.user?.plan?.nombre || '...' }}</h3>
                     </div>
                     <div class="md:mt-8">
-                        <div
-                            class="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-gray-50 dark:bg-black/20 border border-black/20 dark:border-white/5 backdrop-blur-md">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full 
+                                   bg-gray-100 border border-gray-200 
+                                   dark:bg-black/20 dark:border-white/5 backdrop-blur-md">
                             <span class="relative flex h-2 w-2 md:h-2.5 md:w-2.5">
                                 <span
                                     class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -74,16 +74,21 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-            <!-- Tarjeta de Cuentas -->
+
             <div
-                class="col-span-1 group relative overflow-hidden rounded-[2rem] border dark:border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/50 hover:shadow-primary/50 dark:hover:border-white/10 dark:hover:shadow-primary/10">
-                <div class=" absolute -right-10 -top-10 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl
-                pointer-events-none group-hover:bg-blue-600/30 transition-colors duration-500">
+                class="col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
+                       bg-white border border-gray-200 hover:border-primary/30 hover:shadow-primary/20
+                       dark:bg-transparent dark:border-white/10 dark:bg-gradient-to-br dark:from-white/5 dark:via-white/[0.02] dark:to-transparent dark:backdrop-blur-2xl dark:hover:border-white/50 dark:hover:shadow-primary/10">
+
+                <div
+                    class="absolute -right-10 -top-10 w-32 h-32 bg-blue-600/10 dark:bg-blue-600/20 rounded-full blur-3xl
+                pointer-events-none group-hover:bg-blue-600/20 dark:group-hover:bg-blue-600/30 transition-colors duration-500">
                 </div>
 
                 <div class="p-5 md:p-8 h-full flex flex-col justify-between relative z-10">
                     <div class="flex justify-between items-start">
-                        <p class="text-[0.60rem] md:text-xs font-bold text-mako-400 uppercase tracking-[0.2em] mt-1">
+                        <p
+                            class="text-[0.60rem] md:text-xs font-bold text-gray-500 dark:text-mako-400 uppercase tracking-[0.2em] mt-1">
                             Cuentas</p>
                     </div>
 
@@ -96,17 +101,18 @@ onMounted(() => {
                             <span
                                 class="text-xs md:text-lg font-bold text-gray-900 dark:text-mako-300 hidden md:block">Items</span>
                             <span
-                                class="text-[0.6rem] font-bold text-mako-500 uppercase tracking-wide -mt-1 md:block hidden">Activos</span>
+                                class="text-[0.6rem] font-bold text-gray-400 dark:text-mako-500 uppercase tracking-wide -mt-1 md:block hidden">Activos</span>
                         </div>
                     </div>
 
                     <div class="mt-4 md:mt-8 space-y-2 md:space-y-3">
-                        <div
-                            class="relative w-full h-3 md:h-4 bg-white/10 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
+                        <div class="relative w-full h-3 md:h-4 rounded-full overflow-hidden 
+                                   bg-gray-100 border border-gray-200 
+                                   dark:bg-white/10 dark:border-white/10 shadow-inner">
                             <div class="absolute top-0 left-0 h-full rounded-full
-                bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400
-                shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)]
-                transition-all duration-1000 ease-out"
+                                        bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400
+                                        shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)]
+                                        transition-all duration-1000 ease-out"
                                 :style="{ width: ((auth.user?.limites?.cuentas?.usadas / auth.user?.limites?.cuentas?.total) * 100) + '%' }">
 
                                 <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-80">
@@ -115,7 +121,7 @@ onMounted(() => {
                         </div>
 
                         <div class="flex justify-between items-center text-[0.65rem] md:text-xs font-medium px-1">
-                            <div class="flex items-center gap-1.5 text-gray-900 dark:text-mako-300">
+                            <div class="flex items-center gap-1.5 text-gray-600 dark:text-mako-300">
                                 <span>Max: <span class="text-gray-900 dark:text-white font-bold">{{
                                     auth.user?.limites?.cuentas?.total ||
                                     10 }}</span></span>
@@ -125,16 +131,19 @@ onMounted(() => {
                 </div>
             </div>
 
-            <!-- Tarjeta de Boveda -->
             <div
-                class="col-span-1 group relative overflow-hidden rounded-[2rem] border dark:border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-white/50 hover:shadow-primary/50 dark:hover:border-white/10 dark:hover:shadow-primary/10  ">
-                <div class=" absolute -right-10 -top-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl pointer-events-none
-            group-hover:bg-primary/30 transition-colors duration-500">
+                class="col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
+                       bg-white border border-gray-200 hover:border-primary/30 hover:shadow-primary/20
+                       dark:bg-transparent dark:border-white/10 dark:bg-gradient-to-br dark:from-white/5 dark:via-white/[0.02] dark:to-transparent dark:backdrop-blur-2xl dark:hover:border-white/50 dark:hover:shadow-primary/10">
+
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl pointer-events-none
+                            group-hover:bg-primary/20 dark:group-hover:bg-primary/30 transition-colors duration-500">
                 </div>
 
                 <div class="p-5 md:p-8 h-full flex flex-col justify-between relative z-10">
                     <div class="flex justify-between items-start">
-                        <p class="text-[0.60rem] md:text-xs font-bold text-mako-400 uppercase tracking-[0.2em] mt-1">
+                        <p
+                            class="text-[0.60rem] md:text-xs font-bold text-gray-500 dark:text-mako-400 uppercase tracking-[0.2em] mt-1">
                             Espacio</p>
                     </div>
 
@@ -149,12 +158,13 @@ onMounted(() => {
                     </div>
 
                     <div class="mt-4 md:mt-8 space-y-2 md:space-y-3">
-                        <div
-                            class="relative w-full h-3 md:h-4 bg-white/10 rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
+                        <div class="relative w-full h-3 md:h-4 rounded-full overflow-hidden 
+                                   bg-gray-100 border border-gray-200 
+                                   dark:bg-white/10 dark:border-white/10 shadow-inner">
                             <div class="absolute top-0 left-0 h-full rounded-full
-                bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400
-                shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)]
-                transition-all duration-1000 ease-out"
+                                        bg-gradient-to-r from-primary to-sky-400 dark:from-indigo-500 dark:via-blue-500 dark:to-sky-400
+                                        shadow-none dark:shadow-[0_0_15px_rgba(59,130,246,0.6)]
+                                        transition-all duration-1000 ease-out"
                                 :style="{ width: ((auth.user?.limites?.cuentas?.usadas / auth.user?.limites?.cuentas?.total) * 100) + '%' }">
 
                                 <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-80">
@@ -163,7 +173,7 @@ onMounted(() => {
                         </div>
 
                         <div class="flex justify-between items-center text-[0.65rem] md:text-xs font-medium px-1">
-                            <div class="flex items-center gap-1.5 text-gray-900 dark:text-white">
+                            <div class="flex items-center gap-1.5 text-gray-600 dark:text-white">
                                 <span>De: <span class="text-gray-900 dark:text-white font-bold">{{
                                     auth.user?.limites?.almacenamiento?.total_gb || 0 }} GB</span></span>
                             </div>
@@ -172,7 +182,7 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <!-- Seccion Recompensas -->
+
         <div
             class="relative overflow-hidden rounded-[2.5rem] p-[1px] bg-gradient-to-r from-primary/100 via-gray-200 to-gray-300 dark:from-primary/30 dark:via-mako-800 dark:to-mako-900 shadow-2xl shadow-primary/10">
 
