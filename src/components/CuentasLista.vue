@@ -229,8 +229,7 @@ const guardarCuenta = async () => {
 
         <div v-else class="grid grid-cols-1 gap-4">
             <div v-for="cuenta in cuentasFiltradas" :key="cuenta.id"
-                class="group relative overflow-hidden rounded-2xl border transition-all duration-300
-                       bg-white border-gray-200 hover:shadow-md hover:border-primary/30
+                class="group relative overflow-hidden rounded-2xl border transition-all duration-300 border-gray-200 hover:shadow-md hover:border-primary/30
                        dark:border-white/10 dark:bg-gradient-to-r dark:from-mako-900/60 dark:to-black/40 dark:backdrop-blur-xl dark:hover:border-white/20 dark:hover:bg-white/[0.03]">
 
                 <div class="relative z-10 p-4 flex items-center gap-4">

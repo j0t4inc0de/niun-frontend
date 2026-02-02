@@ -69,8 +69,7 @@ onMounted(() => {
 
 <template>
     <div
-        class="group relative overflow-hidden rounded-[2.5rem] border border-gray-200 bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-white/5 dark:via-white/[0.02] dark:to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300">
-
+        class="group relative overflow-hidden rounded-[2.5rem] border border-gray-200 bg-white dark:bg-transparent dark:border-white/10 dark:bg-gradient-to-br dark:from-white/5 dark:via-white/[0.02] dark:to-transparent backdrop-blur-2xl shadow-2xl transition-all duration-300">
         <div
             class="absolute -left-10 -top-10 w-64 h-64 bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-blue-600/10 dark:group-hover:bg-blue-600/20 transition-colors duration-500">
         </div>
