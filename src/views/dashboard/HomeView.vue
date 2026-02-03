@@ -35,11 +35,11 @@ onMounted(() => {
                 </p>
             </div>
         </div>
-        <!-- Tarjeta de PLan -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
 
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+            <!-- Tarjeta de PLan -->
             <div
-                class="col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
+                class="col-span-2 md:col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
                        bg-white border border-gray-200 hover:border-primary/30 hover:shadow-primary/20
                        dark:bg-transparent dark:border-white/10 dark:bg-gradient-to-br dark:from-white/5 dark:via-white/[0.02] dark:to-transparent dark:backdrop-blur-2xl dark:hover:border-white/50 dark:hover:shadow-primary/10">
 
@@ -124,7 +124,7 @@ onMounted(() => {
                             <div class="flex items-center gap-1.5 text-gray-600 dark:text-mako-300">
                                 <span>Max: <span class="text-gray-900 dark:text-white font-bold">{{
                                     auth.user?.limites?.cuentas?.total ||
-                                    10 }}</span></span>
+                                        10 }}</span></span>
                             </div>
                         </div>
                     </div>
