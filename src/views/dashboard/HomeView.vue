@@ -36,7 +36,7 @@ onMounted(() => {
             </div>
         </div>
         <!-- Tarjeta de PLan -->
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
 
             <div
                 class="col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
@@ -124,7 +124,7 @@ onMounted(() => {
                             <div class="flex items-center gap-1.5 text-gray-600 dark:text-mako-300">
                                 <span>Max: <span class="text-gray-900 dark:text-white font-bold">{{
                                     auth.user?.limites?.cuentas?.total ||
-                                        10 }}</span></span>
+                                    10 }}</span></span>
                             </div>
                         </div>
                     </div>
