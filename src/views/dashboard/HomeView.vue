@@ -74,7 +74,7 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-
+            <!-- Tarjeta de Cuentas -->
             <div
                 class="col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
                        bg-white border border-gray-200 hover:border-primary/30 hover:shadow-primary/20
@@ -130,7 +130,7 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-
+            <!-- Tarjeta de Almacenamiento -->
             <div
                 class="col-span-1 group relative overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-300 hover:-translate-y-1 
                        bg-white border border-gray-200 hover:border-primary/30 hover:shadow-primary/20
@@ -182,7 +182,7 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-
+        <!-- Seccion de recompensas -->
         <div
             class="relative overflow-hidden rounded-[2.5rem] p-[1px] bg-gradient-to-r from-primary/100 via-gray-200 to-gray-300 dark:from-primary/30 dark:via-mako-800 dark:to-mako-900 shadow-2xl shadow-primary/10">
 
