@@ -3,21 +3,19 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import authService from '../services/auth'
 import router from '../router'
-import axios from 'axios' // <--- IMPORTANTE: Necesitamos axios puro aquí
+import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', () => {
-  // Estado
   const user = ref(null)
   const token = ref(sessionStorage.getItem('access_token'))
   const refreshToken = ref(sessionStorage.getItem('refresh_token'))
 
-  // Getters
   const isAuthenticated = computed(() => !!token.value)
 
-  // Acciones
   async function login(credentials) {
     try {
       const response = await authService.login(credentials)
+
       const accessToken = response.data.access
       const refreshTokenData = response.data.refresh
 
@@ -38,9 +36,12 @@ export const useAuthStore = defineStore('auth', () => {
   async function renovarToken() {
     try {
       const currentRefreshToken = sessionStorage.getItem('refresh_token')
-      if (!currentRefreshToken) throw new Error('No hay refresh token')
+      if (!currentRefreshToken) throw new Error('No hay refresh token disponible')
 
-      const baseURL = import.meta.env.VITE_API_BASE_URL
+      let baseURL = import.meta.env.VITE_API_BASE_URL
+      if (baseURL.endsWith('/')) {
+        baseURL = baseURL.slice(0, -1)
+      }
 
       const response = await axios.post(`${baseURL}/token/refresh/`, {
         refresh: currentRefreshToken,
@@ -64,17 +65,20 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  // 3. Perfil de Usuario
   async function fetchUserProfile() {
     if (!token.value) return
     try {
       const response = await authService.getProfile()
       user.value = response.data
     } catch (error) {
+      // Si falla cargar el perfil (y no es por token, ya que el interceptor lo habría manejado),
+      // podría ser un error de red o servidor. No deslogueamos agresivamente aquí a menos que sea necesario.
       console.error('Error cargando perfil:', error)
-      logout()
     }
   }
 
+  // 4. Logout
   function logout(redirect = true) {
     user.value = null
     token.value = null
@@ -88,9 +92,11 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  // Manejo de errores específicos (ej. autodestrucción de cuenta)
   function handleAuthError(error) {
     if (error.response && error.response.data) {
       const detail = error.response.data.detail || ''
+
       if (typeof detail === 'string' && detail.includes('eliminados permanentemente')) {
         logout()
         alert('Tu cuenta ha sido eliminada permanentemente por seguridad.')
