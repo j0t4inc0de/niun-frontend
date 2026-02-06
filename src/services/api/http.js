@@ -10,11 +10,10 @@ const http = axios.create({
   },
 })
 
-// Variables para controlar la concurrencia de renovación
+// Variables para controlar la concurrencia de renovación (Mutex)
 let isRefreshing = false
 let failedQueue = []
 
-// Función para procesar la cola de peticiones en espera
 const processQueue = (error, token = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -26,6 +25,7 @@ const processQueue = (error, token = null) => {
   failedQueue = []
 }
 
+// Interceptor de Request
 http.interceptors.request.use(
   (config) => {
     const token = sessionStorage.getItem('access_token')
@@ -37,10 +37,18 @@ http.interceptors.request.use(
   (error) => Promise.reject(error),
 )
 
+// Interceptor de Response
 http.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config
+
+    if (
+      originalRequest.url.includes('/api/token/') || // Login o Refresh endpoints (ajusta según tu backend)
+      originalRequest.url.includes('/login') // Por si acaso
+    ) {
+      return Promise.reject(error)
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
@@ -62,10 +70,10 @@ http.interceptors.response.use(
 
       try {
         const authStore = useAuthStore()
+
         const newToken = await authStore.renovarToken()
 
         processQueue(null, newToken)
-
         originalRequest.headers.Authorization = `Bearer ${newToken}`
         return http(originalRequest)
       } catch (refreshError) {
