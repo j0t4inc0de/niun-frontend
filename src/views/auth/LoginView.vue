@@ -36,7 +36,7 @@ const tituloHeader = computed(() => {
 
 const subtituloHeader = computed(() => {
     if (isLogin.value) {
-        return loginStep.value === 1 ? 'Gestión segura de credenciales' : 'Ingresa tu llave maestra.';
+        return loginStep.value === 1 ? 'Niun esfuerzo, todo en su lugar.' : 'Ingresa tu llave maestra.';
     }
     return registerStep.value === 1 ? 'Paso 1: Identidad' : 'Paso 2: Configura tu seguridad';
 });
@@ -263,7 +263,7 @@ const toggleView = () => {
                         <button type="button" @click="showPassword = !showPassword"
                             class="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-mako-500 hover:text-white transition-colors">
                             <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility'
-                            }}</span>
+                                }}</span>
                         </button>
                     </div>
                 </div>
