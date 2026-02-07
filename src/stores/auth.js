@@ -65,7 +65,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // 3. Perfil de Usuario
   async function fetchUserProfile() {
     if (!token.value) return
     try {
